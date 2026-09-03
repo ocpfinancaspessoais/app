@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0f1e">
+<meta name="color-scheme" content="dark light">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>O Código da Prosperidade | App Financeiro</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --navy: #0a0f1e; --navy2: #111827; --navy3: #1a2235; --card: #141c2e;
+    --border: #1e2d45; --gold: #c9a84c; --gold2: #e8c96a; --teal: #00b4b4;
+    --teal2: #00d4d4; --text: #e8eaf0; --muted: #6b7a99; --danger: #e05252;
+    --warn: #e09a30; --ok: #38c97a; --purple: #8b6cf0;
+    --title-grad-a: #fff; --title-grad-b: var(--gold2);
+    --font-head: 'Space Grotesk', sans-serif; --font-body: 'Inter', sans-serif;
+  }
+  html[data-theme="light"] {
+    color-scheme: light;
+    --navy: #f4f6fa; --navy2: #eef1f7; --navy3: #e7ebf3; --card: #ffffff;
+    --border: #dde3ee; --gold: #a3792a; --gold2: #c9962f; --teal: #009494;
+    --teal2: #00abab; --text: #1a2235; --muted: #62708c; --danger: #d43f3f;
+    --warn: #c9820f; --ok: #279e63; --purple: #7654d6;
+    --title-grad-a: #1a2235; --title-grad-b: var(--gold);
+  }
+  html[data-theme="light"] body,
+  html[data-theme="light"] #login-screen,
+  html[data-theme="light"] .content,
+  html[data-theme="light"] .page { background-color: var(--navy) !important; color: var(--text) !important; }
+  html[data-theme="light"] .card,
+  html[data-theme="light"] .topbar,
+  html[data-theme="light"] .nav-tabs,
+  html[data-theme="light"] .login-card,
+  html[data-theme="light"] .app-menu-drawer,
+  html[data-theme="light"] .caixinha-card,
+  html[data-theme="light"] .divida-item,
+  html[data-theme="light"] .add-divida-form,
+  html[data-theme="light"] .month-nav,
+  html[data-theme="light"] .pct-total,
+  html[data-theme="light"] .hist-item,
+  html[data-theme="light"] .login-welcome,
+  html[data-theme="light"] .app-menu-info-panel { background-color: var(--card) !important; color: var(--text) !important; }
+  html[data-theme="light"] .input-value,
+  html[data-theme="light"] .form-input,
+  html[data-theme="light"] .form-group-sm input,
+  html[data-theme="light"] .form-group-sm select,
+  html[data-theme="light"] .pct-input,
+  html[data-theme="light"] .theme-switch,
+  html[data-theme="light"] .divida-progress-bar,
+  html[data-theme="light"] .ipf-bar-container { background-color: var(--navy3) !important; color: var(--text) !important; }
+  html[data-theme="light"] .section-title,
+  html[data-theme="light"] .hist-mes,
+  html[data-theme="light"] .divida-nome,
+  html[data-theme="light"] .caixinha-value,
+  html[data-theme="light"] .input-label,
+  html[data-theme="light"] .resumo-table td,
+  html[data-theme="light"] .month-nav select { color: var(--text) !important; }
+  html[data-theme="light"] .section-sub,
+  html[data-theme="light"] .card-title,
+  html[data-theme="light"] .hist-sub,
+  html[data-theme="light"] .caixinha-name,
+  html[data-theme="light"] .caixinha-pct,
+  html[data-theme="light"] .ipf-label,
+  html[data-theme="light"] .divida-info,
+  html[data-theme="light"] .form-label,
+  html[data-theme="light"] .form-input::placeholder,
+  html[data-theme="light"] .prefix,
+  html[data-theme="light"] .pct-symbol,
+  html[data-theme="light"] .app-menu-section-title,
+  html[data-theme="light"] .app-menu-footer .footer-copy,
+  html[data-theme="light"] .login-sub,
+  html[data-theme="light"] .divider-ou,
+  html[data-theme="light"] .resumo-table th,
+  html[data-theme="light"] .app-menu-info-panel p { color: var(--muted) !important; }
+  html[data-theme="light"] .login-title,
+  html[data-theme="light"] .logo-lockup-text { background: linear-gradient(135deg, var(--title-grad-a) 0%, var(--title-grad-b) 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--navy); color: var(--text); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; transition: background-color 0.3s ease, color 0.3s ease; }
+  .card, .topbar, .nav-tabs, .login-card, .caixinha-card, .divida-item, .add-divida-form, .month-nav, .pct-total, .hist-item, .input-value, .form-input, .form-group-sm input, .form-group-sm select, .pct-input, .app-menu-drawer, .theme-switch { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+  #login-screen { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px 24px 48px; background: radial-gradient(ellipse at 50% 0%, var(--navy2) 0%, var(--navy) 70%); transition: background-color 0.3s ease; }
+  .app-menu-btn { background: none; border: 1px solid var(--border); color: var(--muted); width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+  .app-menu-btn:hover { color: var(--teal); border-color: var(--teal); }
+  .app-menu-btn svg { width: 19px; height: 19px; }
+  .app-menu-overlay { position: fixed; inset: 0; background: rgba(5,9,20,0.55); backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity 0.25s ease; z-index: 200; }
+  .app-menu-overlay.show { opacity: 1; pointer-events: auto; }
+  .app-menu-drawer { position: fixed; top: 0; left: 0; height: 100%; width: min(300px, 84vw); background: var(--card); border-right: 1px solid var(--border); padding: 20px 18px; transform: translateX(-100%); transition: transform 0.3s ease, background-color 0.3s ease; z-index: 201; overflow-y: auto; display: flex; flex-direction: column; }
+  .app-menu-drawer.show { transform: translateX(0); }
+  .app-menu-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .app-menu-head-title { font-family: var(--font-head); font-size: 15px; font-weight: 700; color: var(--gold); }
+  .app-menu-close { background: none; border: 1px solid var(--border); color: var(--muted); width: 32px; height: 32px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .app-menu-close:hover { color: var(--teal); border-color: var(--teal); }
+  .app-menu-section-title { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin: 18px 0 10px; }
+  .app-menu-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .app-menu-list li button, .app-menu-list li a { width: 100%; text-align: left; background: none; border: none; color: var(--text); font-size: 14px; font-family: var(--font-body); padding: 11px 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.15s; text-decoration: none; }
+  .app-menu-list li button:hover, .app-menu-list li a:hover { background: var(--navy3); }
+  .app-menu-list li.disabled button { color: var(--muted); cursor: default; }
+  .app-menu-list li.disabled button:hover { background: none; }
+  .app-menu-soon-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; color: var(--muted); background: var(--navy3); border-radius: 6px; padding: 2px 7px; margin-left: auto; }
+  .app-menu-info-panel { display: none; padding: 4px 12px 12px; }
+  .app-menu-info-panel.show { display: block; }
+  .app-menu-info-panel p { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+  .app-menu-info-panel strong { color: var(--gold); }
+  .theme-switch { display: flex; background: var(--navy3); border-radius: 10px; padding: 4px; gap: 4px; }
+  .theme-switch button { flex: 1; padding: 9px; text-align: center; font-size: 13px; font-weight: 600; border-radius: 7px; cursor: pointer; color: var(--muted); border: none; background: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; }
+  .theme-switch button.active { background: var(--teal); color: #fff; }
+  .theme-switch svg { width: 15px; height: 15px; }
+  .app-menu-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); text-align: center; }
+  .app-menu-footer .footer-brand { font-family: var(--font-head); font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 4px; }
+  .app-menu-footer .footer-copy { font-size: 10.5px; color: var(--muted); line-height: 1.6; }
+  .logo-slot { display: flex; align-items: center; justify-content: center; margin-bottom: 18px; min-height: 70px; }
+  .logo-slot img { max-height: 90px; max-width: 220px; object-fit: contain; }
+  .logo-mark-svg { display: block; overflow: visible; }
+  .logo-rotor { transform-origin: 100px 100px; animation: logoSpin 30s linear infinite; }
+  @keyframes logoSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .logo-rotor { animation: none; } }
+  .logo-lockup { display: inline-flex; align-items: center; gap: 10px; }
+  .logo-lockup .logo-mark-svg { flex-shrink: 0; }
+  .logo-lockup-text { font-family: var(--font-head); font-weight: 700; line-height: 1.05; background: linear-gradient(135deg, var(--title-grad-a) 0%, var(--title-grad-b) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; white-space: nowrap; }
+  .login-logo { font-family: var(--font-head); font-size: 13px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .login-title { font-family: var(--font-head); font-size: 28px; font-weight: 700; text-align: center; background: linear-gradient(135deg, var(--title-grad-a) 0%, var(--title-grad-b) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 4px; }
+  .login-sub { color: var(--muted); font-size: 14px; text-align: center; margin-bottom: 24px; }
+  .login-welcome { background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.2); border-radius: 14px; padding: 14px 16px; text-align: center; margin-bottom: 6px; }
+  .login-welcome p { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .login-welcome strong { color: var(--gold); }
+  .login-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 32px 28px; width: 100%; max-width: 400px; }
+  .login-tabs { display: flex; background: var(--navy3); border-radius: 10px; padding: 4px; margin-bottom: 28px; }
+  .login-tab { flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 600; border-radius: 7px; cursor: pointer; color: var(--muted); transition: all 0.2s; border: none; background: none; }
+  .login-tab.active { background: var(--teal); color: #fff; }
+  .form-group { margin-bottom: 18px; }
+  .form-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .form-input { width: 100%; background: var(--navy3); border: 1px solid var(--border); border-radius: 10px; padding: 13px 16px; color: var(--text); font-size: 15px; font-family: var(--font-body); outline: none; transition: border-color 0.2s; }
+  .form-input:focus { border-color: var(--teal); }
+  .form-input::placeholder { color: var(--muted); }
+  .password-wrapper { position: relative; display: flex; align-items: center; }
+  .password-wrapper .form-input { padding-right: 46px; }
+  .toggle-senha { position: absolute; right: 14px; background: none; border: none; cursor: pointer; color: var(--muted); display: flex; align-items: center; padding: 0; transition: color 0.2s; }
+  .toggle-senha:hover { color: var(--teal); }
+  .toggle-senha svg { width: 20px; height: 20px; pointer-events: none; }
+  .btn-primary { width: 100%; background: linear-gradient(135deg, var(--teal) 0%, var(--teal2) 100%); color: #fff; font-family: var(--font-head); font-size: 15px; font-weight: 700; padding: 15px; border: none; border-radius: 12px; cursor: pointer; transition: opacity 0.2s, transform 0.1s; margin-top: 8px; }
+  .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .login-error { color: var(--danger); font-size: 13px; text-align: center; margin-top: 12px; display: none; }
+  .btn-google { width: 100%; background: #fff; color: #3c4043; font-family: var(--font-body); font-size: 14px; font-weight: 600; padding: 13px 15px; border: 1.5px solid #dadce0; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: box-shadow 0.2s, background 0.2s; }
+  .btn-google:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.2); background: #f8f8f8; }
+  .btn-google svg { flex-shrink: 0; }
+  .divider-ou { display: flex; align-items: center; gap: 10px; margin: 18px 0; color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: 0.5px; }
+  .divider-ou::before, .divider-ou::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  #app-screen { display: none; }
+  .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .topbar-brand { font-family: var(--font-head); font-size: 15px; font-weight: 700; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-user { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #0a0f1e; }
+  .btn-logout { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+  .nav-tabs { display: flex; overflow-x: auto; background: var(--navy2); border-bottom: 1px solid var(--border); padding: 0 8px; scrollbar-width: none; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab { flex-shrink: 0; padding: 14px 18px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; background: none; border: none; }
+  .nav-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+  .content { padding: 20px 16px 40px; max-width: 800px; margin: 0 auto; }
+  .section-title { font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .section-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .month-nav { display: flex; align-items: center; gap: 10px; justify-content: center; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; margin-bottom: 16px; }
+  .month-nav button { background: var(--navy3); border: 1px solid var(--border); color: var(--teal); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; font-size: 20px; font-weight: 700; flex-shrink: 0; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .month-nav button:hover { background: rgba(0,180,180,0.12); }
+  .month-nav select { background: var(--navy3); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 9px 12px; font-family: var(--font-head); font-weight: 600; font-size: 14px; flex: 1; max-width: 230px; text-align: center; text-align-last: center; outline: none; cursor: pointer; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+  .card-title { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .input-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .input-label { font-size: 13px; color: var(--text); flex: 1; }
+  .input-value { background: var(--navy3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: 14px; font-family: var(--font-body); outline: none; width: 140px; text-align: right; transition: border-color 0.2s; }
+  .input-value:focus { border-color: var(--teal); }
+  .prefix { font-size: 12px; color: var(--muted); margin-right: -4px; }
+  .caixinhas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .caixinha-card { background: var(--navy3); border: 1px solid var(--border); border-radius: 14px; padding: 16px; position: relative; overflow: hidden; }
+  .caixinha-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .cx-nb::before { background: var(--teal); } .cx-lf::before { background: var(--gold); } .cx-dlp::before { background: var(--purple); }
+  .cx-edu::before { background: #5b9cf0; } .cx-div::before { background: #f06b9a; } .cx-doa::before { background: var(--ok); }
+  .caixinha-emoji { font-size: 22px; margin-bottom: 8px; }
+  .caixinha-name { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 6px; }
+  .caixinha-value { font-family: var(--font-head); font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .caixinha-pct { font-size: 12px; color: var(--muted); }
+  .ipf-container { text-align: center; padding: 24px 20px; }
+  .ipf-number { font-family: var(--font-head); font-size: 64px; font-weight: 700; line-height: 1; margin-bottom: 8px; }
+  .ipf-label { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  .ipf-bar-container { background: var(--navy3); border-radius: 8px; height: 12px; overflow: hidden; margin-bottom: 8px; }
+  .ipf-bar { height: 100%; border-radius: 8px; transition: width 0.6s ease; }
+  .ipf-nivel { display: inline-block; padding: 6px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-top: 12px; letter-spacing: 0.5px; }
+  .divida-item { background: var(--navy3); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+  .divida-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .divida-nome { font-size: 14px; font-weight: 600; color: var(--text); }
+  .divida-progress-bar { background: var(--navy); border-radius: 4px; height: 6px; overflow: hidden; margin-top: 8px; }
+  .divida-progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal2)); border-radius: 4px; transition: width 0.5s ease; }
+  .divida-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .btn-remove { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+  .btn-remove:hover { border-color: var(--danger); color: var(--danger); }
+  .add-divida-form { background: var(--navy3); border: 1px dashed var(--border); border-radius: 12px; padding: 16px; margin-top: 12px; }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-group-sm label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+  .form-group-sm input { width: 100%; background: var(--navy); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s; }
+  .form-group-sm input:focus { border-color: var(--teal); }
+  .form-group-sm select { width: 100%; background: var(--navy); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s; font-family: var(--font-body); cursor: pointer; }
+  .form-group-sm select:focus { border-color: var(--teal); }
+  .btn-add { background: var(--navy3); border: 1px solid var(--teal); color: var(--teal); border-radius: 10px; padding: 12px 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; width: 100%; justify-content: center; }
+  .btn-add:hover { background: rgba(0,180,180,0.1); }
+  .despesa-item { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .resumo-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .resumo-table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .resumo-table td { padding: 12px 12px; border-bottom: 1px solid rgba(30,45,69,0.5); color: var(--text); }
+  .resumo-table tr:last-child td { border-bottom: none; font-weight: 700; color: var(--gold); }
+  .hist-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--navy3); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+  .hist-item.atual { border-color: var(--gold); }
+  .hist-mes { font-family: var(--font-head); font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; text-transform: capitalize; }
+  .hist-sub { font-size: 12px; color: var(--muted); }
+  .hist-ipf { text-align: right; }
+  .hist-ipf-num { font-family: var(--font-head); font-size: 18px; font-weight: 700; }
+  .hist-tag { display: inline-block; font-size: 10px; font-weight: 700; color: var(--navy); background: var(--gold); border-radius: 6px; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+  .pct-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(30,45,69,0.6); }
+  .pct-row:last-child { border-bottom: none; }
+  .pct-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .pct-name { flex: 1; font-size: 14px; margin-left: 10px; }
+  .pct-input { background: var(--navy3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: var(--text); font-size: 14px; font-weight: 700; width: 72px; text-align: right; outline: none; transition: border-color 0.2s; }
+  .pct-input:focus { border-color: var(--teal); }
+  .pct-symbol { font-size: 14px; color: var(--muted); margin-left: 4px; width: 16px; }
+  .pct-total { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 12px 16px; background: var(--navy3); border-radius: 10px; font-size: 14px; font-weight: 700; }
+  .pct-total-val { color: var(--gold); }
+  .page { display: none; }
+  .page.active { display: block; }
+  .text-gold { color: var(--gold); } .text-teal { color: var(--teal); } .text-ok { color: var(--ok); } .text-danger { color: var(--danger); } .text-warn { color: var(--warn); }
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+  .row { display: flex; justify-content: space-between; align-items: center; }
+  .mt-8 { margin-top: 8px; }
+  #app-footer { display: none; background: var(--navy2); border-top: 1px solid var(--border); padding: 24px 20px; text-align: center; width: 100%; }
+  .footer-brand { font-family: var(--font-head) !important; font-size: 14px !important; font-weight: 700 !important; color: var(--gold) !important; margin-bottom: 6px !important; }
+  .footer-copy { font-size: 11px !important; color: var(--muted) !important; line-height: 1.7 !important; }
+  .footer-copy span { color: rgba(201,168,76,0.6) !important; }
+  .footer-exclusive { display: inline-block !important; margin-top: 10px !important; padding: 6px 14px !important; background: rgba(201,168,76,0.07) !important; border: 1px solid rgba(201,168,76,0.2) !important; border-radius: 20px !important; font-size: 11px !important; color: var(--gold) !important; font-weight: 600 !important; letter-spacing: 0.5px !important; }
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ok); color: var(--navy); padding: 12px 24px; border-radius: 100px; font-size: 13px; font-weight: 700; transition: transform 0.3s ease; z-index: 999; white-space: nowrap; }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+  .pro-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; color: #3a2c0a; background: linear-gradient(135deg, var(--gold2), var(--gold)); border-radius: 6px; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+  .pro-limit-box { background: rgba(201,168,76,0.07); border: 1px dashed rgba(201,168,76,0.35); border-radius: 12px; padding: 16px; text-align: center; margin-top: 12px; }
+  .pro-limit-box p { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 12px; }
+  .pro-limit-box strong { color: var(--gold); }
+  .pro-lock-card { background: var(--navy3); border: 1px dashed rgba(201,168,76,0.35); border-radius: 16px; padding: 28px 20px; text-align: center; }
+  .pro-lock-card .pro-lock-icon { font-size: 30px; margin-bottom: 10px; }
+  .pro-lock-card p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; max-width: 380px; margin-left: auto; margin-right: auto; }
+  .btn-pro { background: linear-gradient(135deg, var(--gold2), var(--gold)); color: #2b2007; font-family: var(--font-head); font-size: 13px; font-weight: 700; padding: 11px 20px; border: none; border-radius: 10px; cursor: pointer; transition: opacity 0.2s, transform 0.1s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-pro:hover { opacity: 0.9; transform: translateY(-1px); }
+  #pro-modal-overlay { position: fixed; inset: 0; background: rgba(5,9,20,0.65); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 300; padding: 20px; }
+  #pro-modal-overlay.show { display: flex; }
+  .pro-modal { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; max-width: 380px; width: 100%; text-align: center; }
+  .pro-modal .pro-lock-icon { font-size: 34px; margin-bottom: 10px; }
+  .pro-modal h3 { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
+  .pro-modal p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+  .pro-modal .btn-pro { width: 100%; justify-content: center; padding: 13px; font-size: 14px; }
+  .pro-modal .btn-fechar-modal { width: 100%; background: none; border: none; color: var(--muted); font-size: 12px; margin-top: 10px; cursor: pointer; padding: 6px; }
+  .pro-modal .btn-fechar-modal:hover { color: var(--text); }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute; overflow:hidden;" aria-hidden="true">
+  <defs>
+    <linearGradient id="goldMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff3cf"/>
+      <stop offset="30%" stop-color="#e8c96a"/>
+      <stop offset="65%" stop-color="#c9a84c"/>
+      <stop offset="100%" stop-color="#9c7d30"/>
+    </linearGradient>
+    <radialGradient id="logoGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff3cf" stop-opacity="0.95"/>
+      <stop offset="45%" stop-color="#e8c96a" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#e8c96a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <symbol id="logo-mark" viewBox="0 0 200 200">
+    <circle class="logo-glow-c" cx="100" cy="188" r="30" fill="url(#logoGlow)"/>
+    <g class="logo-rotor">
+      <path d="M87.75,187.15 A88,88 0 0 1 87.75,12.85" fill="none" stroke="url(#goldMetal)" stroke-width="14" stroke-linecap="round"/>
+      <path d="M112.25,12.85 A88,88 0 0 1 112.25,187.15" fill="none" stroke="url(#goldMetal)" stroke-width="14" stroke-linecap="round"/>
+      <path d="M91.93,157.44 A58,58 0 0 1 91.93,42.56" fill="none" stroke="url(#goldMetal)" stroke-width="13" stroke-linecap="round"/>
+      <path d="M108.07,42.56 A58,58 0 0 1 108.07,157.44" fill="none" stroke="url(#goldMetal)" stroke-width="13" stroke-linecap="round"/>
+    </g>
+    <circle cx="100" cy="83" r="15" fill="url(#goldMetal)"/>
+    <polygon points="92,91 108,91 112,130 88,130" fill="url(#goldMetal)"/>
+    <path d="M100,172 C102,182 106,186 118,188 C106,190 102,194 100,204 C98,194 94,190 82,188 C94,186 98,182 100,172 Z" fill="url(#goldMetal)"/>
+  </symbol>
+</svg>
+<div id="login-screen">
+  <div class="logo-slot">
+    <svg class="logo-mark-svg" width="86" height="86" viewBox="0 0 200 200" role="img" aria-label="Logo O Código da Prosperidade"><use href="#logo-mark"></use></svg>
+  </div>
+  <div class="login-logo">App Financeiro</div>
+  <h1 class="login-title">O Código da Prosperidade</h1>
+  <p class="login-sub">Sistema exclusivo de organização financeira</p>
+  <div class="login-card">
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="switchTab('login', event)">Entrar</button>
+      <button class="login-tab" onclick="switchTab('cadastro', event)">Criar conta</button>
+    </div>
+    <div id="form-login">
+      <button class="btn-google" onclick="loginComGoogle()">
+        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+        Fazer login com o Google
+      </button>
+      <div class="divider-ou">ou</div>
+      <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" type="email" id="login-email" placeholder="seu@email.com"></div>
+      <div class="form-group"><label class="form-label">Senha</label>
+        <div class="password-wrapper">
+          <input class="form-input" type="password" id="login-senha" placeholder="••••••••">
+          <button class="toggle-senha" type="button" onclick="toggleSenha('login-senha', this)" aria-label="Mostrar senha">
+            <svg id="icon-login" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="fazerLogin()">Entrar na minha conta</button>
+      <div class="login-error" id="login-erro">E-mail ou senha incorretos.</div>
+    </div>
+    <div id="form-cadastro" style="display:none">
+      <button class="btn-google" onclick="loginComGoogle()">
+        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+        Criar conta com o Google
+      </button>
+      <div class="divider-ou">ou</div>
+      <div class="form-group"><label class="form-label">Nome</label><input class="form-input" type="text" id="cad-nome" placeholder="Seu nome"></div>
+      <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" type="email" id="cad-email" placeholder="seu@email.com"></div>
+      <div class="form-group"><label class="form-label">Senha</label>
+        <div class="password-wrapper">
+          <input class="form-input" type="password" id="cad-senha" placeholder="Mínimo 6 caracteres">
+          <button class="toggle-senha" type="button" onclick="toggleSenha('cad-senha', this)" aria-label="Mostrar senha">
+            <svg id="icon-cad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="fazerCadastro()">Criar minha conta</button>
+      <div class="login-error" id="cad-erro"></div>
+    </div>
+  </div>
+</div>
+
+<div id="app-screen">
+  <div class="app-menu-overlay" id="app-menu-overlay" onclick="fecharMenuApp()"></div>
+  <div class="app-menu-drawer" id="app-menu-drawer">
+    <div class="app-menu-head">
+      <span class="app-menu-head-title">Menu</span>
+      <button class="app-menu-close" onclick="fecharMenuApp()" aria-label="Fechar menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="app-menu-section-title">Aparência</div>
+    <div class="theme-switch">
+      <button id="btn-tema-escuro" onclick="definirTema('dark')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        Escuro
+      </button>
+      <button id="btn-tema-claro" onclick="definirTema('light')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        Claro
+      </button>
+    </div>
+
+    <div class="app-menu-section-title">Sobre o método</div>
+    <div class="login-welcome">
+      <p>Este é o seu <strong>espaço exclusivo</strong> para organizar sua vida financeira com o método das <strong>6 Caixinhas</strong>. Acompanhe sua renda, controle suas dívidas e descubra seu <strong>Índice de Pressão Financeira</strong> — passo a passo rumo à <strong>liberdade financeira</strong>.</p>
+    </div>
+
+    <div class="app-menu-section-title">Conhecer mais</div>
+    <ul class="app-menu-list">
+      <li><a href="https://www.6cxocodigodaprosperidade.com.br/">🔑 Conhecer o Método Completo</a></li>
+      <li><a href="https://www.6cxocodigodaprosperidade.com.br/p/mentoria.html">🎓 Mentoria "Rumo à Prosperidade"</a></li>
+      <li>
+        <button type="button" onclick="alternarInfoMenu('info-sobre')">👤 Sobre o App e o Autor</button>
+        <div class="app-menu-info-panel" id="info-sobre">
+          <p>Este aplicativo foi criado por <strong>Gilberto Silva</strong>, autor do método O Código da Prosperidade. É o seu espaço exclusivo — sem anúncios, sem letrinha miúda — para colocar em prática o que você aprende na mentoria e nos conteúdos do método.</p>
+        </div>
+      </li>
+      <li class="disabled"><button type="button">💬 Suporte <span class="app-menu-soon-tag">em breve</span></button></li>
+    </ul>
+
+    <div class="app-menu-footer">
+      <div class="footer-brand">O Código da Prosperidade</div>
+      <div class="footer-copy">&copy; 2026 Gilberto Silva &middot; Todos os direitos reservados<br>Método desenvolvido e criado por Gilberto Silva.</div>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="app-menu-btn" onclick="abrirMenuApp()" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="logo-lockup">
+        <svg class="logo-mark-svg" width="30" height="30" viewBox="0 0 200 200" role="img" aria-label="Logo O Código da Prosperidade"><use href="#logo-mark"></use></svg>
+        <span class="logo-lockup-text" style="font-size:14px;">O Código da<br>Prosperidade</span>
+      </div>
+    </div>
+    <div class="topbar-user">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+    </div>
+  </div>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('visao-geral', event)">Visão Geral</button>
+    <button class="nav-tab" onclick="showPage('caixinhas', event)">6 Caixinhas</button>
+    <button class="nav-tab" onclick="showPage('dividas', event)">Dívidas</button>
+    <button class="nav-tab" onclick="showPage('nec-basicas', event)">Nec. Básicas</button>
+    <button class="nav-tab" onclick="showPage('ipf', event)">IPF</button>
+    <button class="nav-tab" onclick="showPage('historico', event)">Histórico</button>
+    <button class="nav-tab" onclick="showPage('configurar', event)">Configurar</button>
+  </nav>
+
+  <div class="page active content" id="page-visao-geral">
+    <div class="section-title">Painel do Mês</div>
+    <p class="section-sub">Escolha o mês para ver ou lançar seus números</p>
+    <div class="month-nav">
+      <button onclick="mesAnterior()" aria-label="Mês anterior">‹</button>
+      <select id="seletor-mes" onchange="trocarMes(this.value)"></select>
+      <button onclick="mesSeguinte()" aria-label="Próximo mês">›</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Seus números deste mês</div>
+      <div class="input-row"><span class="input-label">💼 Renda bruta</span><span class="prefix">R$</span><input class="input-value" type="number" id="renda-bruta" value="3000" oninput="recalcular()"></div>
+      <div class="input-row"><span class="input-label">📅 Total de parcelas de dívidas</span><span class="prefix">R$</span><input class="input-value" type="number" id="total-parcelas" value="0" readonly style="background:#0d1525; cursor:default;"></div>
+      <div class="input-row"><span class="input-label">🧾 Deduções/Descontos/Custos</span><span class="prefix">R$</span><input class="input-value" type="number" id="total-deducoes" value="0" readonly style="background:#0d1525; cursor:default;"></div>
+      <div class="divider"></div>
+      <div class="input-row"><span class="input-label" style="font-weight:700;">💵 Subtotal líquido disponível</span><span style="font-family:var(--font-head); font-size:20px; font-weight:700;" class="text-gold" id="subtotal-display">R$ 3.000,00</span></div>
+    </div>
+    <div class="card" id="card-deducoes">
+      <div class="card-title">🧾 Deduções/Descontos/Custos <span class="pro-badge">PRO após 2</span></div>
+      <p class="section-sub" style="margin-bottom:12px;"> Custo de mercadoria, capital de giro, dízimos, ofertas, ou qualquer valor que precise ser retirado antes da divisão das caixinhas. Não afeta o cálculo do IPF.</p>
+      <div id="lista-deducoes"></div>
+      <div id="deducoes-form-wrapper">
+        <div class="add-divida-form">
+          <div class="form-group-sm" style="margin-bottom:10px;"><label>Nome</label><input type="text" id="ded-nome" placeholder="Ex: Dízimos/Custo de mercadoria"></div>
+          <div class="form-row-2">
+            <div class="form-group-sm">
+              <label>Tipo</label>
+              <select id="ded-tipo" onchange="atualizarCampoValorDeducao()">
+                <option value="percentual">Percentual (%)</option>
+                <option value="fixo">Valor fixo (R$)</option>
+              </select>
+            </div>
+            <div class="form-group-sm"><label id="ded-valor-label">Valor (%)</label><input type="number" id="ded-valor" placeholder="10"></div>
+          </div>
+          <button class="btn-add" id="ded-btn-salvar" onclick="salvarDeducaoForm()"><span>+</span> Adicionar dedução</button>
+          <button class="btn-remove" id="ded-btn-cancelar" onclick="cancelarEdicaoDeducao()" style="display:none; width:100%; margin-top:8px; text-align:center;">Cancelar edição</button>
+        </div>
+      </div>
+      <div class="pro-limit-box" id="ded-limite-box" style="display:none;">
+        <p>Você atingiu o limite de <strong><span id="ded-limite-num"></span> deduções grátis</strong>. Assine o PRO para cadastrar deduções ilimitadas.</p>
+        <button class="btn-pro" onclick="abrirModalPro('deducoes')">✨ Assinar PRO</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Índice de Pressão Financeira (IPF)</div>
+      <div class="row">
+        <div><div style="font-family:var(--font-head); font-size:38px; font-weight:700;" id="ipf-mini">0,00</div><div style="font-size:12px; color:var(--muted);">quanto menor, melhor</div></div>
+        <div style="text-align:right;"><div class="ipf-nivel" id="nivel-mini" style="background:rgba(56,201,122,0.15); color:var(--ok);">CONFORTÁVEL</div></div>
+      </div>
+      <div class="ipf-bar-container mt-8"><div class="ipf-bar" id="ipf-bar-mini" style="width:0%; background: var(--ok);"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribuição das 6 Caixinhas</div>
+      <div class="caixinhas-grid">
+        <div class="caixinha-card cx-nb"><div class="caixinha-emoji">🏠</div><div class="caixinha-name">Nec. Básicas</div><div class="caixinha-value" id="cx-nb-val">R$ 0</div><div class="caixinha-pct" id="cx-nb-pct">—%</div></div>
+        <div class="caixinha-card cx-lf"><div class="caixinha-emoji">🏦</div><div class="caixinha-name">Liberdade Fin.</div><div class="caixinha-value" id="cx-lf-val">R$ 0</div><div class="caixinha-pct" id="cx-lf-pct">10%</div></div>
+        <div class="caixinha-card cx-dlp"><div class="caixinha-emoji">🛡️</div><div class="caixinha-name">Desp. Longo Prazo</div><div class="caixinha-value" id="cx-dlp-val">R$ 0</div><div class="caixinha-pct" id="cx-dlp-pct">10%</div></div>
+        <div class="caixinha-card cx-edu"><div class="caixinha-emoji">📚</div><div class="caixinha-name">Educação</div><div class="caixinha-value" id="cx-edu-val">R$ 0</div><div class="caixinha-pct" id="cx-edu-pct">10%</div></div>
+        <div class="caixinha-card cx-div"><div class="caixinha-emoji">🎉</div><div class="caixinha-name">Diversão</div><div class="caixinha-value" id="cx-div-val">R$ 0</div><div class="caixinha-pct" id="cx-div-pct">10%</div></div>
+        <div class="caixinha-card cx-doa"><div class="caixinha-emoji">🤝</div><div class="caixinha-name">Doações</div><div class="caixinha-value" id="cx-doa-val">R$ 0</div><div class="caixinha-pct" id="cx-doa-pct">10%</div></div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="salvarMes()">💾 Salvar este mês</button>
+    <p style="font-size:12px; color:var(--muted); text-align:center; margin-top:8px;">Seus dados também são salvos automaticamente neste aparelho.</p>
+  </div>
+
+  <div class="page content" id="page-caixinhas">
+    <div class="section-title">6 Caixinhas</div>
+    <p class="section-sub">Veja para onde vai cada real do seu subtotal líquido</p>
+    <div class="card">
+      <div class="card-title">Como o dinheiro é dividido</div>
+      <table class="resumo-table"><thead><tr><th>Caixinha</th><th style="text-align:right">%</th><th style="text-align:right">Valor (R$)</th></tr></thead><tbody id="tabela-caixinhas"></tbody></table>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg, rgba(0,180,180,0.08), rgba(201,168,76,0.06));">
+      <div class="card-title">💡 Dica do método</div>
+      <p style="font-size:13px; color:var(--text); line-height:1.6;">A <strong style="color:var(--teal)">Necessidades Básicas</strong> é calculada com o que sobra após destinar os percentuais das outras caixinhas. Se ela ultrapassar <strong style="color:var(--warn)">55% da renda</strong>, você está em zona de risco — avalie reduzir custos fixos, redefinir os percentuais das outras caixinhas ou buscar renda extra.</p>
+    </div>
+  </div>
+
+  <div class="page content" id="page-dividas">
+    <div class="section-title">Quitação de Dívidas <span class="pro-badge">PRO após 2</span></div>
+    <p class="section-sub">Suas parcelas mensais impactam diretamente o IPF</p>
+    <div class="card">
+      <div class="row">
+        <div><div style="font-size:12px; color:var(--muted);">Total em parcelas/mês</div><div style="font-family:var(--font-head); font-size:26px; font-weight:700; color:var(--danger);" id="div-total-parcelas">R$ 0,00</div></div>
+        <div><div style="font-size:12px; color:var(--muted);">Saldo devedor total</div><div style="font-family:var(--font-head); font-size:26px; font-weight:700; color:var(--warn);" id="div-saldo-total">R$ 0,00</div></div>
+      </div>
+    </div>
+    <div id="lista-dividas"></div>
+    <div id="dividas-form-wrapper">
+      <div class="add-divida-form">
+        <div class="card-title" id="form-titulo-divida" style="margin-bottom:14px;">➕ Adicionar dívida</div>
+        <div class="form-group-sm" style="margin-bottom:10px;"><label>Nome da dívida</label><input type="text" id="div-nome" placeholder="Ex: Cartão de crédito"></div>
+        <div class="form-row-2"><div class="form-group-sm"><label>Valor inicial (R$)</label><input type="number" id="div-valor" placeholder="1500"></div><div class="form-group-sm"><label>Nº de parcelas</label><input type="number" id="div-parcelas" placeholder="12"></div></div>
+        <div class="form-row-2"><div class="form-group-sm"><label>Parcela mensal (R$)</label><input type="number" id="div-parcela-mensal" placeholder="125"></div><div class="form-group-sm"><label>Parcelas restantes</label><input type="number" id="div-restantes" placeholder="11"></div></div>
+        <button class="btn-add" id="btn-acao-divida" onclick="salvarDividaForm()"><span>+</span> Adicionar dívida</button>
+        <button class="btn-remove" id="btn-cancela-edicao" onclick="cancelarEdicaoDivida()" style="display:none; width:100%; margin-top:8px; text-align:center;">Cancelar edição</button>
+      </div>
+    </div>
+    <div class="pro-limit-box" id="div-limite-box" style="display:none;">
+      <p>Você atingiu o limite de <strong><span id="div-limite-num"></span> dívidas grátis</strong>. Assine o PRO para cadastrar dívidas ilimitadas.</p>
+      <button class="btn-pro" onclick="abrirModalPro('dividas')">✨ Assinar PRO</button>
+    </div>
+  </div>
+
+  <div class="page content" id="page-nec-basicas">
+    <div class="section-title">Necessidades Básicas</div>
+    <p class="section-sub">Detalhamento dos gastos essenciais mensais</p>
+    <div class="card">
+      <div class="card-title">Despesas do mês</div>
+      <div id="lista-despesas"></div>
+      <div class="divider"></div>
+      <div class="row">
+        <span style="font-size:14px; font-weight:700;">Total de necessidades básicas</span>
+        <div style="text-align:right;">
+          <span style="font-family:var(--font-head); font-size:20px; font-weight:700; color:var(--teal);" id="nb-total-display">R$ 0,00</span><br>
+          <span id="nb-pct-renda" style="font-size:12px; font-weight:700; color:var(--muted);">—</span>
+        </div>
+      </div>
+      <div style="margin-top:8px; font-size:12px; color:var(--muted);">
+        Orçamento disponível para NB: <span class="text-gold" id="nb-orcamento">R$ 0,00</span>
+        &nbsp;|&nbsp; Diferença: <span id="nb-diff">R$ 0,00</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">➕ Adicionar categoria</div>
+      <div class="form-row-2"><div class="form-group-sm"><label>Descrição</label><input type="text" id="nb-desc" placeholder="Ex: Aluguel"></div><div class="form-group-sm"><label>Valor (R$)</label><input type="number" id="nb-valor" placeholder="700"></div></div>
+      <button class="btn-add" onclick="adicionarDespesa()"><span>+</span> Adicionar despesa</button>
+    </div>
+  </div>
+
+  <div class="page content" id="page-ipf">
+    <div class="section-title">Índice de Pressão Financeira</div>
+    <p class="section-sub">Mede o quanto das suas necessidades básicas consome sua renda</p>
+    <div class="card">
+      <div class="ipf-container">
+        <div class="ipf-number" id="ipf-numero">0,00</div>
+        <div class="ipf-label">Índice IPF</div>
+        <div class="ipf-bar-container"><div class="ipf-bar" id="ipf-bar-main" style="width:0%"></div></div>
+        <div class="ipf-nivel" id="ipf-nivel-badge">CALCULANDO...</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Como interpretar o IPF</div>
+      <div style="display:flex; flex-direction:column; gap:10px; margin-top:4px;">
+        <div class="row" style="padding:12px; background:rgba(56,201,122,0.08); border-radius:10px; border-left:3px solid var(--ok);"><div><div style="font-size:13px; font-weight:700; color:var(--ok);">CONFORTÁVEL</div><div style="font-size:12px; color:var(--muted);">IPF abaixo de 0,70</div></div><div style="font-size:12px; color:var(--muted); text-align:right;">Ótima margem para<br>investir e crescer</div></div>
+        <div class="row" style="padding:12px; background:rgba(224,154,48,0.08); border-radius:10px; border-left:3px solid var(--warn);"><div><div style="font-size:13px; font-weight:700; color:var(--warn);">ATENÇÃO</div><div style="font-size:12px; color:var(--muted);">IPF entre 0,70 e 0,85</div></div><div style="font-size:12px; color:var(--muted); text-align:right;">Revise gastos e<br>busque renda extra</div></div>
+        <div class="row" style="padding:12px; background:rgba(224,82,82,0.08); border-radius:10px; border-left:3px solid var(--danger);"><div><div style="font-size:13px; font-weight:700; color:var(--danger);">EMERGÊNCIA</div><div style="font-size:12px; color:var(--muted);">IPF acima de 0,85</div></div><div style="font-size:12px; color:var(--muted); text-align:right;">Ação imediata<br>necessária</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Fórmula do IPF</div>
+      <div style="background:var(--navy3); border-radius:10px; padding:16px; font-family:monospace; font-size:13px; color:var(--gold); text-align:center; line-height:2;">IPF = (Nec. Básicas + Parcelas Dívidas) ÷ Renda Bruta</div>
+      <p style="font-size:12px; color:var(--muted); margin-top:12px; line-height:1.6;">Quanto maior o índice, maior a pressão que suas despesas básicas exercem sobre sua renda. O objetivo é sempre reduzir esse número ao longo do tempo. As Deduções/Descontos/Custos não entram nessa fórmula — elas só reduzem o valor disponível para as 6 Caixinhas.</p>
+    </div>
+  </div>
+
+  <div class="page content" id="page-historico">
+    <div class="section-title">Histórico por Mês <span class="pro-badge">PRO após 3 meses</span></div>
+    <p class="section-sub">Acompanhe a evolução dos seus números mês a mês</p>
+    <div class="card"><div class="card-title">Meses registrados</div><div id="lista-historico"></div></div>
+    <div class="pro-limit-box" id="hist-limite-box" style="display:none;">
+      <p>Você já tem mais meses registrados do que o plano grátis mostra. Assine o PRO para ver <strong>todo o seu histórico</strong>, sem limite.</p>
+      <button class="btn-pro" onclick="abrirModalPro('historico')">✨ Assinar PRO</button>
+    </div>
+  </div>
+
+  <div class="page content" id="page-configurar">
+    <div class="section-title">Configurações</div>
+    <p class="section-sub">Personalize os percentuais das suas caixinhas</p>
+    <div class="card">
+      <div class="card-title">Percentuais das caixinhas (5 configuráveis)</div>
+      <p style="font-size:12px; color:var(--muted); margin-bottom:16px;">As Necessidades Básicas recebem o que restar após distribuir as demais.</p>
+      <div class="pct-row"><div class="pct-dot" style="background:var(--gold)"></div><span class="pct-name">🏦 Liberdade Financeira</span><input class="pct-input" type="number" id="pct-lf" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
+      <div class="pct-row"><div class="pct-dot" style="background:var(--purple)"></div><span class="pct-name">🛡️ Despesas de Longo Prazo</span><input class="pct-input" type="number" id="pct-dlp" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
+      <div class="pct-row"><div class="pct-dot" style="background:#5b9cf0"></div><span class="pct-name">📚 Educação</span><input class="pct-input" type="number" id="pct-edu" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
+      <div class="pct-row"><div class="pct-dot" style="background:#f06b9a"></div><span class="pct-name">🎉 Diversão</span><input class="pct-input" type="number" id="pct-div" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
+      <div class="pct-row"><div class="pct-dot" style="background:var(--ok)"></div><span class="pct-name">🤝 Doações</span><input class="pct-input" type="number" id="pct-doa" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
+      <div class="pct-total"><span>🏠 Necessidades Básicas (restante)</span><span class="pct-total-val" id="pct-nb-calc">50%</span></div>
+      <div style="margin-top:12px; padding:12px; background:var(--navy3); border-radius:10px; text-align:center;">
+        <span style="font-size:13px; color:var(--muted);">Total alocado: </span>
+        <span style="font-size:14px; font-weight:700;" id="pct-total-check">100%</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💾 Salvar e fazer backup <span class="pro-badge">PRO</span></div>
+      <p style="font-size:12px; color:var(--muted); margin-bottom:16px; line-height:1.6;">Seus dados ficam salvos neste aparelho. Para guardar uma cópia ou levar para outro celular/computador, use o <strong style="color:var(--gold)">backup</strong>.</p>
+      <button class="btn-primary" onclick="salvarMes()" style="margin-top:0;">💾 Salvar dados agora</button>
+      <div id="backup-botoes-wrapper" style="display:flex; gap:10px; margin-top:12px;">
+        <button class="btn-add" style="flex:1; justify-content:center;" onclick="exportarBackup()">⬇️ Exportar backup</button>
+        <button class="btn-add" style="flex:1; justify-content:center;" onclick="document.getElementById('import-file').click()">⬆️ Importar backup</button>
+      </div>
+      <div class="pro-lock-card" id="backup-lock-card" style="display:none; margin-top:12px;">
+        <div class="pro-lock-icon">🔒</div>
+        <p>Exportar e importar backup é um recurso <strong style="color:var(--gold)">PRO</strong>. Assine para guardar uma cópia dos seus dados ou levar para outro aparelho.</p>
+        <button class="btn-pro" onclick="abrirModalPro('backup')">✨ Assinar PRO</button>
+      </div>
+      <input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="importarBackup(this)">
+    </div>
+  </div>
+</div>
+
+<div id="pro-modal-overlay" onclick="if(event.target===this) fecharModalPro()">
+  <div class="pro-modal">
+    <div class="pro-lock-icon">✨</div>
+    <h3>Recurso PRO</h3>
+    <p id="pro-modal-texto">Assine o plano PRO para desbloquear este recurso e ir além no seu Código da Prosperidade.</p>
+    <button class="btn-pro" onclick="irParaAssinaturaPro()">Assinar PRO</button>
+    <button class="btn-fechar-modal" onclick="fecharModalPro()">Agora não</button>
+  </div>
+</div>
+
+<footer id="app-footer">
+  <div class="footer-brand">O Código da Prosperidade</div>
+  <div class="footer-copy">&copy; 2026 O Código da Prosperidade | Gilberto Silva &middot; Todos os direitos reservados<br><span>Método desenvolvido e criado por Gilberto Silva.</span><br>Este sistema é propriedade intelectual exclusiva do autor.</div>
+  <div class="footer-exclusive">✨ Experimente gratuitamente. Mentorados e alunos do Método têm bônus especial de acesso</div>
+</footer>
+<div id="toast">✓ Salvo!</div>
+
+<script>
+const eyeOpen = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+const eyeClosed = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+function toggleSenha(inputId, btn) { const input = document.getElementById(inputId); const isPassword = input.type === 'password'; input.type = isPassword ? 'text' : 'password'; btn.querySelector('svg').innerHTML = isPassword ? eyeClosed : eyeOpen; btn.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha'); }
+
+function abrirMenuApp() { document.getElementById('app-menu-drawer').classList.add('show'); document.getElementById('app-menu-overlay').classList.add('show'); }
+function fecharMenuApp() { document.getElementById('app-menu-drawer').classList.remove('show'); document.getElementById('app-menu-overlay').classList.remove('show'); }
+function alternarInfoMenu(id) { const el = document.getElementById(id); if (el) el.classList.toggle('show'); }
+
+const TEMA_KEY = 'cdp_tema';
+function definirTema(tema) {
+  document.documentElement.setAttribute('data-theme', tema === 'light' ? 'light' : 'dark');
+  document.getElementById('btn-tema-escuro').classList.toggle('active', tema !== 'light');
+  document.getElementById('btn-tema-claro').classList.toggle('active', tema === 'light');
+  localStorage.setItem(TEMA_KEY, tema);
+}
+function carregarTema() { definirTema(localStorage.getItem(TEMA_KEY) || 'dark'); }
+carregarTema();
+
+let loginComGoogle;
+
+/* ===================== PRO / MONETIZAÇÃO =====================
+   Nesta etapa (código publicado só no Netlify), ainda NÃO existe
+   validação real de pagamento — isso vem depois, com a integração
+   da Digital Goods API (via PWABuilder/manifesto) + Firebase para
+   guardar o status de assinatura entre aparelhos.
+   Por enquanto, isPro() sempre retorna false: todo mundo vê os
+   limites e os avisos de PRO, mas ninguém é bloqueado por engano
+   nem cobrado. Quando a integração real existir, troque apenas
+   o corpo desta função para consultar o status verdadeiro.
+================================================================ */
+const LIMITE_DIVIDAS_GRATIS = 2;
+const LIMITE_DEDUCOES_GRATIS = 2;
+const LIMITE_HISTORICO_MESES_GRATIS = 3;
+const DIAS_TRIAL_GRATIS = 30;
+
+function isPro() {
+  // TODO: substituir por checagem real via Digital Goods API / Firebase
+  return localStorage.getItem('cdp_pro_debug') === 'true';
+}
+
+/* Trial de 30 dias por pessoa, contado a partir de quando cada
+   um criou a conta / usou o app pela primeira vez (não é uma
+   data fixa pro app todo — cada usuário tem sua própria janela). */
+const CRIACAO_KEY = 'cdp_criacao_contas';
+function registrarDataCriacaoConta(email) {
+  const registro = JSON.parse(localStorage.getItem(CRIACAO_KEY) || '{}');
+  if (!registro[email]) {
+    registro[email] = new Date().toISOString();
+    localStorage.setItem(CRIACAO_KEY, JSON.stringify(registro));
+  }
+}
+function diasDeUso(email) {
+  const registro = JSON.parse(localStorage.getItem(CRIACAO_KEY) || '{}');
+  if (!registro[email]) return 0;
+  const inicio = new Date(registro[email]);
+  const hoje = new Date();
+  return Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24));
+}
+function estaEmTrial() {
+  if (!estado.usuario) return false;
+  return diasDeUso(estado.usuario.email) <= DIAS_TRIAL_GRATIS;
+}
+function diasRestantesTrial() {
+  if (!estado.usuario) return 0;
+  return Math.max(0, DIAS_TRIAL_GRATIS - diasDeUso(estado.usuario.email));
+}
+// Acesso completo = já é assinante PRO OU ainda está dentro do trial de 30 dias
+function temAcessoCompleto() {
+  return isPro() || estaEmTrial();
+}
+
+function abrirModalPro(origem) {
+  const textos = {
+    dividas: 'Você já cadastrou o limite de dívidas do plano grátis. Assine o PRO para acompanhar quantas dívidas quiser, sem limite.',
+    deducoes: 'Você já cadastrou o limite de deduções do plano grátis. Assine o PRO para ter deduções ilimitadas.',
+    historico: 'Seu histórico grátis mostra apenas os meses mais recentes. Assine o PRO para ver todo o seu histórico, sem limite.',
+    backup: 'Exportar e importar backup é exclusivo do plano PRO. Assine para guardar uma cópia segura dos seus dados.'
+  };
+  document.getElementById('pro-modal-texto').textContent = textos[origem] || textos.backup;
+  document.getElementById('pro-modal-overlay').classList.add('show');
+}
+function fecharModalPro() { document.getElementById('pro-modal-overlay').classList.remove('show'); }
+function irParaAssinaturaPro() {
+  // TODO: quando a Digital Goods API estiver integrada, chamar aqui
+  // o fluxo de compra real da assinatura PRO na Google Play.
+  toast('🚧 Assinatura PRO chegando em breve!');
+  fecharModalPro();
+}
+
+const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function chaveMesAtual() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
+function nomeMes(chave) { const [ano, mes] = chave.split('-'); return meses[parseInt(mes, 10) - 1] + ' ' + ano; }
+function deslocarMes(chave, delta) { let [ano, mes] = chave.split('-').map(Number); mes += delta; while (mes > 12) { mes -= 12; ano++; } while (mes < 1) { mes += 12; ano--; } return ano + '-' + String(mes).padStart(2, '0'); }
+const DESPESAS_PADRAO = [{desc:'Mercado',valor:700},{desc:'Aluguel',valor:700},{desc:'Internet',valor:159},{desc:'Luz',valor:150},{desc:'Gás',valor:50},{desc:'Combustível',valor:200},{desc:'Saúde/farmácia',valor:250},{desc:'Telefone',valor:20}];
+const PCTS_PADRAO = { lf: 10, dlp: 10, edu: 10, div: 10, doa: 10 };
+let estado = { usuario: null, mesAtivo: chaveMesAtual(), meses: {} };
+let editandoDividaIndex = null;
+let editandoDeducaoIndex = null;
+
+function dadosMes() {
+  if (!estado.meses[estado.mesAtivo]) {
+    const chaves = Object.keys(estado.meses).sort();
+    const base = chaves.length ? estado.meses[chaves[chaves.length - 1]] : null;
+    estado.meses[estado.mesAtivo] = base ? { rendaBruta: base.rendaBruta, dividas: JSON.parse(JSON.stringify(base.dividas || [])), despesas: JSON.parse(JSON.stringify(base.despesas || DESPESAS_PADRAO)), deducoes: JSON.parse(JSON.stringify(base.deducoes || [])), pcts: Object.assign({}, base.pcts) } : { rendaBruta: 3000, dividas: [], despesas: JSON.parse(JSON.stringify(DESPESAS_PADRAO)), deducoes: [], pcts: Object.assign({}, PCTS_PADRAO) };
+  }
+  if (!estado.meses[estado.mesAtivo].deducoes) estado.meses[estado.mesAtivo].deducoes = [];
+  return estado.meses[estado.mesAtivo];
+}
+const R = v => 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+const pct = v => Number(v).toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:1}) + '%';
+function salvarLocal() { if (!estado.usuario) return; localStorage.setItem('cdp_' + estado.usuario.email, JSON.stringify(estado)); }
+function carregarLocal(email) { const raw = localStorage.getItem('cdp_' + email); estado.mesAtivo = chaveMesAtual(); estado.meses = {}; if (raw) { const saved = JSON.parse(raw); if (saved.meses && Object.keys(saved.meses).length) { estado.meses = saved.meses; estado.mesAtivo = saved.mesAtivo || chaveMesAtual(); } else { const chave = chaveMesAtual(); estado.meses[chave] = { rendaBruta: saved.rendaBruta ?? 3000, dividas: saved.dividas ?? [], despesas: saved.despesas ?? JSON.parse(JSON.stringify(DESPESAS_PADRAO)), deducoes: saved.deducoes ?? [], pcts: saved.pcts ?? Object.assign({}, PCTS_PADRAO) }; } } }
+function toast(msg) { const t = document.getElementById('toast'); t.style.background = 'var(--ok)'; t.style.color = 'var(--navy)'; t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+const USERS_KEY = 'cdp_users';
+function getUsers() { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); }
+function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+function switchTab(tab, e) { document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active')); document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none'; document.getElementById('form-cadastro').style.display = tab === 'cadastro' ? 'block' : 'none'; if (e && e.target) e.target.classList.add('active'); }
+function fazerCadastro() { const nome = document.getElementById('cad-nome').value.trim(); const email = document.getElementById('cad-email').value.trim().toLowerCase(); const senha = document.getElementById('cad-senha').value; const erroEl = document.getElementById('cad-erro'); if (!nome || !email || !senha) { erroEl.style.display='block'; erroEl.textContent='Preencha todos os campos.'; return; } if (senha.length < 6) { erroEl.style.display='block'; erroEl.textContent='Senha deve ter ao menos 6 caracteres.'; return; } const users = getUsers(); if (users[email]) { erroEl.style.display='block'; erroEl.textContent='Este e-mail já está cadastrado.'; return; } users[email] = { nome, email, senha }; saveUsers(users); entrarNoApp({ nome, email }); toast('✅ Conta criada! Bem-vindo(a)!'); }
+function fazerLogin() { const email = document.getElementById('login-email').value.trim().toLowerCase(); const senha = document.getElementById('login-senha').value; const erroEl = document.getElementById('login-erro'); const users = getUsers(); if (!users[email] || users[email].senha !== senha) { erroEl.style.display='block'; return; } erroEl.style.display = 'none'; entrarNoApp(users[email]); }
+function entrarNoApp(user) { estado.usuario = user; registrarDataCriacaoConta(user.email); carregarLocal(user.email); dadosMes(); document.getElementById('login-screen').style.display = 'none'; document.getElementById('app-screen').style.display = 'block'; document.getElementById('app-footer').style.display = 'block'; document.getElementById('user-avatar').textContent = user.nome.charAt(0).toUpperCase(); sincronizarInputs(); atualizarSeletorMeses(); renderizarDespesas(); renderizarDividas(); renderizarDeducoes(); recalcular(); }
+function sincronizarInputs() { const d = dadosMes(); document.getElementById('renda-bruta').value = d.rendaBruta; document.getElementById('pct-lf').value = d.pcts.lf; document.getElementById('pct-dlp').value = d.pcts.dlp; document.getElementById('pct-edu').value = d.pcts.edu; document.getElementById('pct-div').value = d.pcts.div; document.getElementById('pct-doa').value = d.pcts.doa; }
+function fazerLogout() { salvarLocal(); estado.usuario = null; document.getElementById('app-screen').style.display = 'none'; document.getElementById('app-footer').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; document.getElementById('login-email').value = ''; document.getElementById('login-senha').value = ''; }
+function showPage(id, e) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active')); document.getElementById('page-' + id).classList.add('active'); if (e && e.target) e.target.classList.add('active'); if (id === 'historico') renderizarHistorico(); }
+function atualizarSeletorMeses() { const sel = document.getElementById('seletor-mes'); const chaves = new Set(Object.keys(estado.meses)); chaves.add(estado.mesAtivo); const ordenadas = Array.from(chaves).sort().reverse(); sel.innerHTML = ordenadas.map(k => `<option value="${k}" ${k === estado.mesAtivo ? 'selected' : ''}>${nomeMes(k)}</option>`).join(''); }
+function trocarMes(chave) { salvarLocal(); estado.mesAtivo = chave; cancelarEdicaoDivida(); cancelarEdicaoDeducao(); dadosMes(); sincronizarInputs(); atualizarSeletorMeses(); renderizarDespesas(); renderizarDividas(); renderizarDeducoes(); recalcular(); }
+function mesAnterior() { trocarMes(deslocarMes(estado.mesAtivo, -1)); }
+function mesSeguinte() { trocarMes(deslocarMes(estado.mesAtivo, +1)); }
+function totalDeducoesDoMes(d) { return (d.deducoes || []).reduce((s,x) => s + (x.tipo === 'percentual' ? ((d.rendaBruta||0) * (x.valor/100)) : x.valor), 0); }
+function calcularMes(d) { const totalParcelas = (d.dividas || []).reduce((s, x) => s + (x.parcelaMensal || 0), 0); const totalDeducoes = totalDeducoesDoMes(d); const subtotal = (d.rendaBruta || 0) - totalParcelas - totalDeducoes; const totalNB = (d.despesas || []).reduce((s, x) => s + (x.valor || 0), 0); const ipf = d.rendaBruta > 0 ? (totalNB + totalParcelas) / d.rendaBruta : 0; return { totalParcelas, totalDeducoes, subtotal, totalNB, ipf }; }
+function nivelIPF(ipf) { if (ipf < 0.70) return { nome: 'CONFORTÁVEL', cor: 'var(--ok)' }; if (ipf < 0.85) return { nome: 'ATENÇÃO', cor: 'var(--warn)' }; return { nome: 'EMERGÊNCIA', cor: 'var(--danger)' }; }
+function salvarMes() { recalcular(); salvarLocal(); atualizarSeletorMeses(); toast('💾 Mês salvo: ' + nomeMes(estado.mesAtivo)); }
+function renderizarHistorico() {
+  const lista = document.getElementById('lista-historico');
+  const limiteBox = document.getElementById('hist-limite-box');
+  let chaves = Object.keys(estado.meses).sort().reverse();
+  if (chaves.length === 0) { lista.innerHTML = '<div style="text-align:center;color:var(--muted);padding:24px 0;font-size:14px;">Nenhum mês salvo ainda. Use o botão "Salvar este mês" na Visão Geral.</div>'; limiteBox.style.display = 'none'; return; }
+  const acessoCompleto = temAcessoCompleto();
+  const excedeu = !acessoCompleto && chaves.length > LIMITE_HISTORICO_MESES_GRATIS;
+  const chavesVisiveis = acessoCompleto ? chaves : chaves.slice(0, LIMITE_HISTORICO_MESES_GRATIS);
+  lista.innerHTML = chavesVisiveis.map(k => { const d = estado.meses[k]; const c = calcularMes(d); const n = nivelIPF(c.ipf); const ehAtual = k === estado.mesAtivo; return `<div class="hist-item ${ehAtual ? 'atual' : ''}"><div><div class="hist-mes">${nomeMes(k)}${ehAtual ? '<span class="hist-tag">atual</span>' : ''}</div><div class="hist-sub">Renda ${R(d.rendaBruta)} &middot; NB ${R(c.totalNB)} &middot; Parcelas ${R(c.totalParcelas)}</div><button class="btn-remove" style="margin-top:8px;" onclick="trocarMes('${k}')">Abrir este mês</button></div><div class="hist-ipf"><div class="hist-ipf-num" style="color:${n.cor}">${c.ipf.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})}</div><div class="hist-sub" style="color:${n.cor}; font-weight:600;">${n.nome}</div></div></div>`; }).join('');
+  limiteBox.style.display = excedeu ? 'block' : 'none';
+}
+function exportarBackup() {
+  if (!temAcessoCompleto()) { abrirModalPro('backup'); return; }
+  if (!estado.usuario) return;
+  salvarLocal();
+  const dados = JSON.stringify(estado, null, 2);
+  const blob = new Blob([dados], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'codigo-prosperidade-backup-' + estado.usuario.email.replace(/[^a-z0-9]/gi, '_') + '.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  toast('⬇️ Backup exportado!');
+}
+function importarBackup(input) {
+  if (!temAcessoCompleto()) { abrirModalPro('backup'); input.value = ''; return; }
+  const file = input.files && input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function (ev) { try { const saved = JSON.parse(ev.target.result); if (!saved.meses && saved.rendaBruta === undefined) throw new Error('formato'); if (saved.meses) { estado.meses = saved.meses; estado.mesAtivo = saved.mesAtivo || chaveMesAtual(); } else { estado.meses = {}; estado.mesAtivo = chaveMesAtual(); estado.meses[estado.mesAtivo] = { rendaBruta: saved.rendaBruta ?? 3000, dividas: saved.dividas ?? [], despesas: saved.despesas ?? JSON.parse(JSON.stringify(DESPESAS_PADRAO)), deducoes: saved.deducoes ?? [], pcts: saved.pcts ?? Object.assign({}, PCTS_PADRAO) }; } dadosMes(); sincronizarInputs(); atualizarSeletorMeses(); renderizarDespesas(); renderizarDividas(); renderizarDeducoes(); recalcular(); salvarLocal(); toast('✅ Backup importado!'); } catch (err) { alert('Não foi possível ler este arquivo de backup. Verifique se é o arquivo correto (.json).'); } input.value = ''; }; reader.readAsText(file);
+}
+function atualizarUiBackupPro() {
+  const acessoCompleto = temAcessoCompleto();
+  document.getElementById('backup-botoes-wrapper').style.display = acessoCompleto ? 'flex' : 'none';
+  document.getElementById('backup-lock-card').style.display = acessoCompleto ? 'none' : 'block';
+}
+
+function recalcular() {
+  const d = dadosMes();
+  const rendaBruta = parseFloat(document.getElementById('renda-bruta').value) || 0;
+  d.rendaBruta = rendaBruta;
+  const totalParcelas = d.dividas.reduce((s, x) => s + (x.parcelaMensal || 0), 0);
+  document.getElementById('total-parcelas').value = totalParcelas.toFixed(2);
+  const totalDeducoes = totalDeducoesDoMes(d);
+  document.getElementById('total-deducoes').value = totalDeducoes.toFixed(2);
+  const subtotal = rendaBruta - totalParcelas - totalDeducoes;
+  document.getElementById('subtotal-display').textContent = R(subtotal);
+  const p = d.pcts;
+  const nbPct = 100 - p.lf - p.dlp - p.edu - p.div - p.doa;
+  const vals = { nb: subtotal*(nbPct/100), lf: subtotal*(p.lf/100), dlp: subtotal*(p.dlp/100), edu: subtotal*(p.edu/100), div: subtotal*(p.div/100), doa: subtotal*(p.doa/100) };
+  document.getElementById('cx-nb-val').textContent  = R(vals.nb);
+  document.getElementById('cx-nb-pct').textContent  = pct(nbPct);
+  document.getElementById('cx-lf-val').textContent  = R(vals.lf);
+  document.getElementById('cx-lf-pct').textContent  = pct(p.lf);
+  document.getElementById('cx-dlp-val').textContent = R(vals.dlp);
+  document.getElementById('cx-dlp-pct').textContent = pct(p.dlp);
+  document.getElementById('cx-edu-val').textContent = R(vals.edu);
+  document.getElementById('cx-edu-pct').textContent = pct(p.edu);
+  document.getElementById('cx-div-val').textContent = R(vals.div);
+  document.getElementById('cx-div-pct').textContent = pct(p.div);
+  document.getElementById('cx-doa-val').textContent = R(vals.doa);
+  document.getElementById('cx-doa-pct').textContent = pct(p.doa);
+  const rows = [['🏠 Necessidades Básicas',nbPct,vals.nb],['🏦 Liberdade Financeira',p.lf,vals.lf],['🛡️ Desp. Longo Prazo',p.dlp,vals.dlp],['📚 Educação',p.edu,vals.edu],['🎉 Diversão',p.div,vals.div],['🤝 Doações',p.doa,vals.doa],['TOTAL',100,subtotal]];
+  document.getElementById('tabela-caixinhas').innerHTML = rows.map((r,i) => `<tr><td>${r[0]}</td><td style="text-align:right">${pct(r[1])}</td><td style="text-align:right;font-weight:${i===6?'700':'400'};color:${i===6?'var(--gold)':'var(--text)'}">${R(r[2])}</td></tr>`).join('');
+  const totalNB = d.despesas.reduce((s, x) => s + (x.valor || 0), 0);
+  document.getElementById('nb-total-display').textContent = R(totalNB);
+  const pctNBrenda = rendaBruta > 0 ? (totalNB / rendaBruta * 100) : 0;
+  const nbPctRendaEl = document.getElementById('nb-pct-renda');
+  if (nbPctRendaEl) {
+    nbPctRendaEl.textContent = pctNBrenda.toLocaleString('pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1}) + '% da renda bruta';
+    nbPctRendaEl.style.color = pctNBrenda > 65 ? 'var(--danger)' : pctNBrenda > 55 ? 'var(--warn)' : 'var(--ok)';
+  }
+  document.getElementById('nb-orcamento').textContent = R(vals.nb);
+  const diff = vals.nb - totalNB;
+  const diffEl = document.getElementById('nb-diff');
+  diffEl.textContent = R(Math.abs(diff));
+  diffEl.className = diff >= 0 ? 'text-ok' : 'text-danger';
+  const ipf = rendaBruta > 0 ? (totalNB + totalParcelas) / rendaBruta : 0;
+  const ipfStr = ipf.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('ipf-numero').textContent = ipfStr;
+  document.getElementById('ipf-mini').textContent = ipfStr;
+  const ipfPct = Math.min(ipf * 100, 100);
+  let cor, nivel, bgNivel, textNivel;
+  if (ipf < 0.70)      { cor='var(--ok)';     nivel='CONFORTÁVEL'; bgNivel='rgba(56,201,122,0.15)';  textNivel='var(--ok)'; }
+  else if (ipf < 0.85) { cor='var(--warn)';   nivel='ATENÇÃO';     bgNivel='rgba(224,154,48,0.15)';  textNivel='var(--warn)'; }
+  else                 { cor='var(--danger)'; nivel='EMERGÊNCIA';  bgNivel='rgba(224,82,82,0.15)';   textNivel='var(--danger)'; }
+  ['ipf-bar-main','ipf-bar-mini'].forEach(id => { const el = document.getElementById(id); el.style.width = ipfPct + '%'; el.style.background = cor; });
+  ['ipf-nivel-badge','nivel-mini'].forEach(id => { const el = document.getElementById(id); el.textContent = nivel; el.style.background = bgNivel; el.style.color = textNivel; });
+  document.getElementById('div-total-parcelas').textContent = R(totalParcelas);
+  document.getElementById('div-saldo-total').textContent = R(d.dividas.reduce((s,x) => s+(x.saldoDevedor||0), 0));
+  atualizarUiBackupPro();
+  salvarLocal();
+}
+
+function atualizarPcts() {
+  const d = dadosMes();
+  d.pcts = { lf: parseFloat(document.getElementById('pct-lf').value)||0, dlp: parseFloat(document.getElementById('pct-dlp').value)||0, edu: parseFloat(document.getElementById('pct-edu').value)||0, div: parseFloat(document.getElementById('pct-div').value)||0, doa: parseFloat(document.getElementById('pct-doa').value)||0 };
+  const soma = Object.values(d.pcts).reduce((a,b) => a+b, 0);
+  const nbPct = 100 - soma;
+  document.getElementById('pct-nb-calc').textContent = pct(nbPct);
+  const totalEl = document.getElementById('pct-total-check');
+  totalEl.textContent = pct(soma + nbPct);
+  totalEl.style.color = nbPct < 0 ? 'var(--danger)' : 'var(--ok)';
+  recalcular();
+}
+
+function salvarDividaForm() {
+  const d = dadosMes();
+  if (editandoDividaIndex === null && !temAcessoCompleto() && d.dividas.length >= LIMITE_DIVIDAS_GRATIS) {
+    abrirModalPro('dividas');
+    return;
+  }
+  const nome = document.getElementById('div-nome').value.trim();
+  const valorInicial = parseFloat(document.getElementById('div-valor').value)||0;
+  const nParcelas = parseInt(document.getElementById('div-parcelas').value)||0;
+  const parcelaMensal = parseFloat(document.getElementById('div-parcela-mensal').value)||0;
+  const restantes = parseInt(document.getElementById('div-restantes').value)||0;
+
+  if (!nome || !valorInicial || !parcelaMensal) {
+    alert('Preencha nome, valor inicial e parcela mensal.');
+    return;
+  }
+  const saldoDevedor = parcelaMensal * restantes;
+  const progresso = nParcelas > 0 ? 1 - (restantes / nParcelas) : 0;
+
+  if (editandoDividaIndex !== null) {
+    d.dividas[editandoDividaIndex] = { nome, valorInicial, nParcelas, parcelaMensal, restantes, saldoDevedor, progresso };
+    toast('✅ Dívida atualizada!');
+    cancelarEdicaoDivida();
+  } else {
+    d.dividas.push({ nome, valorInicial, nParcelas, parcelaMensal, restantes, saldoDevedor, progresso });
+    toast('✅ Dívida adicionada!');
+    document.getElementById('div-nome').value = '';
+    document.getElementById('div-valor').value = '';
+    document.getElementById('div-parcelas').value = '';
+    document.getElementById('div-parcela-mensal').value = '';
+    document.getElementById('div-restantes').value = '';
+  }
+  renderizarDividas();
+  recalcular();
+}
+
+function editarDivida(i) {
+  const d = dadosMes().dividas[i];
+  document.getElementById('div-nome').value = d.nome;
+  document.getElementById('div-valor').value = d.valorInicial;
+  document.getElementById('div-parcelas').value = d.nParcelas;
+  document.getElementById('div-parcela-mensal').value = d.parcelaMensal;
+  document.getElementById('div-restantes').value = d.restantes;
+
+  editandoDividaIndex = i;
+  document.getElementById('form-titulo-divida').textContent = '✏️ Editar dívida';
+  document.getElementById('btn-acao-divida').innerHTML = '<span>✓</span> Salvar alteração';
+  document.getElementById('btn-cancela-edicao').style.display = 'block';
+  document.querySelector('#page-dividas .add-divida-form').scrollIntoView({ behavior: 'smooth' });
+  toast('✏️ Editando: ' + d.nome);
+}
+
+function cancelarEdicaoDivida() {
+  editandoDividaIndex = null;
+  document.getElementById('form-titulo-divida').textContent = '➕ Adicionar dívida';
+  document.getElementById('btn-acao-divida').innerHTML = '<span>+</span> Adicionar dívida';
+  document.getElementById('btn-cancela-edicao').style.display = 'none';
+  document.getElementById('div-nome').value = '';
+  document.getElementById('div-valor').value = '';
+  document.getElementById('div-parcelas').value = '';
+  document.getElementById('div-parcela-mensal').value = '';
+  document.getElementById('div-restantes').value = '';
+}
+
+function removerDivida(i) {
+  if (editandoDividaIndex === i) {
+    cancelarEdicaoDivida();
+  } else if (editandoDividaIndex !== null && editandoDividaIndex > i) {
+    editandoDividaIndex--;
+  }
+  dadosMes().dividas.splice(i, 1);
+  renderizarDividas();
+  recalcular();
+  toast('🗑️ Dívida removida');
+}
+
+function renderizarDividas() {
+  const lista = document.getElementById('lista-dividas');
+  const dividas = dadosMes().dividas;
+  const acessoCompleto = temAcessoCompleto();
+  const atingiuLimite = !acessoCompleto && dividas.length >= LIMITE_DIVIDAS_GRATIS;
+
+  if (dividas.length === 0) {
+    lista.innerHTML = '<div style="text-align:center;color:var(--muted);padding:24px 0;font-size:14px;">Nenhuma dívida cadastrada 🎉</div>';
+  } else {
+    lista.innerHTML = dividas.map((d,i) => `
+      <div class="divida-item">
+        <div class="divida-header">
+          <span class="divida-nome">${d.nome}</span>
+          <div style="display:flex; gap:6px;">
+            <button class="btn-remove" onclick="editarDivida(${i})" style="border-color:var(--teal); color:var(--teal);">Editar</button>
+            <button class="btn-remove" onclick="removerDivida(${i})">Remover</button>
+          </div>
+        </div>
+        <div class="divida-progress-bar"><div class="divida-progress-fill" style="width:${(d.progresso*100).toFixed(1)}%"></div></div>
+        <div class="divida-info">
+          <span>Parcela: <strong style="color:var(--text)">${R(d.parcelaMensal)}/mês</strong></span>
+          <span>Restam: <strong style="color:var(--warn)">${d.restantes} parcelas</strong></span>
+          <span>Saldo: <strong style="color:var(--danger)">${R(d.saldoDevedor)}</strong></span>
+        </div>
+      </div>`).join('');
+  }
+
+  document.getElementById('dividas-form-wrapper').style.display = (atingiuLimite && editandoDividaIndex === null) ? 'none' : 'block';
+  const limiteBox = document.getElementById('div-limite-box');
+  document.getElementById('div-limite-num').textContent = LIMITE_DIVIDAS_GRATIS;
+  limiteBox.style.display = (atingiuLimite && editandoDividaIndex === null) ? 'block' : 'none';
+}
+
+function atualizarCampoValorDeducao() {
+  const tipo = document.getElementById('ded-tipo').value;
+  document.getElementById('ded-valor-label').textContent = tipo === 'percentual' ? 'Valor (%)' : 'Valor (R$)';
+  document.getElementById('ded-valor').placeholder = tipo === 'percentual' ? '10' : '150';
+}
+
+function salvarDeducaoForm() {
+  const d = dadosMes();
+  if (editandoDeducaoIndex === null && !temAcessoCompleto() && (d.deducoes||[]).length >= LIMITE_DEDUCOES_GRATIS) {
+    abrirModalPro('deducoes');
+    return;
+  }
+  const nome = document.getElementById('ded-nome').value.trim();
+  const tipo = document.getElementById('ded-tipo').value;
+  const valor = parseFloat(document.getElementById('ded-valor').value) || 0;
+  if (!nome || !valor) { alert('Preencha o nome e o valor da dedução.'); return; }
+  if (editandoDeducaoIndex !== null) {
+    d.deducoes[editandoDeducaoIndex] = { nome, tipo, valor };
+    toast('✅ Dedução atualizada!');
+    cancelarEdicaoDeducao();
+  } else {
+    d.deducoes.push({ nome, tipo, valor });
+    toast('✅ Dedução adicionada!');
+    document.getElementById('ded-nome').value = '';
+    document.getElementById('ded-valor').value = '';
+  }
+  renderizarDeducoes();
+  recalcular();
+}
+
+function editarDeducao(i) {
+  const x = dadosMes().deducoes[i];
+  document.getElementById('ded-nome').value = x.nome;
+  document.getElementById('ded-tipo').value = x.tipo;
+  document.getElementById('ded-valor').value = x.valor;
+  atualizarCampoValorDeducao();
+  editandoDeducaoIndex = i;
+  document.getElementById('ded-btn-salvar').innerHTML = '<span>✓</span> Salvar alteração';
+  document.getElementById('ded-btn-cancelar').style.display = 'block';
+  document.getElementById('card-deducoes').scrollIntoView({ behavior: 'smooth' });
+  toast('✏️ Editando: ' + x.nome);
+}
+
+function cancelarEdicaoDeducao() {
+  editandoDeducaoIndex = null;
+  document.getElementById('ded-nome').value = '';
+  document.getElementById('ded-valor').value = '';
+  document.getElementById('ded-tipo').value = 'percentual';
+  atualizarCampoValorDeducao();
+  document.getElementById('ded-btn-salvar').innerHTML = '<span>+</span> Adicionar dedução';
+  document.getElementById('ded-btn-cancelar').style.display = 'none';
+  renderizarDeducoes();
+}
+
+function removerDeducao(i) {
+  if (editandoDeducaoIndex === i) {
+    cancelarEdicaoDeducao();
+  } else if (editandoDeducaoIndex !== null && editandoDeducaoIndex > i) {
+    editandoDeducaoIndex--;
+  }
+  dadosMes().deducoes.splice(i, 1);
+  renderizarDeducoes();
+  recalcular();
+  toast('🗑️ Dedução removida');
+}
+
+function renderizarDeducoes() {
+  const lista = document.getElementById('lista-deducoes');
+  const d = dadosMes();
+  const deducoes = d.deducoes || [];
+  const acessoCompleto = temAcessoCompleto();
+  const atingiuLimite = !acessoCompleto && deducoes.length >= LIMITE_DEDUCOES_GRATIS;
+
+  if (deducoes.length === 0) {
+    lista.innerHTML = '<div style="text-align:center;color:var(--muted);padding:16px 0;font-size:13px;">Nenhuma dedução cadastrada.</div>';
+  } else {
+    lista.innerHTML = deducoes.map((x,i) => {
+      const valorCalc = x.tipo === 'percentual' ? ((d.rendaBruta||0) * (x.valor/100)) : x.valor;
+      const detalheTxt = x.tipo === 'percentual' ? (x.valor.toLocaleString('pt-BR') + '% = ' + R(valorCalc)) : R(valorCalc);
+      return `
+      <div class="divida-item">
+        <div class="divida-header">
+          <span class="divida-nome">${x.nome}</span>
+          <div style="display:flex; gap:6px;">
+            <button class="btn-remove" onclick="editarDeducao(${i})" style="border-color:var(--teal); color:var(--teal);">Editar</button>
+            <button class="btn-remove" onclick="removerDeducao(${i})">Remover</button>
+          </div>
+        </div>
+        <div class="divida-info">
+          <span>${x.tipo === 'percentual' ? 'Percentual' : 'Valor fixo'}: <strong style="color:var(--text)">${detalheTxt}</strong></span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('deducoes-form-wrapper').style.display = (atingiuLimite && editandoDeducaoIndex === null) ? 'none' : 'block';
+  const limiteBox = document.getElementById('ded-limite-box');
+  document.getElementById('ded-limite-num').textContent = LIMITE_DEDUCOES_GRATIS;
+  limiteBox.style.display = (atingiuLimite && editandoDeducaoIndex === null) ? 'block' : 'none';
+}
+
+function adicionarDespesa() { const desc = document.getElementById('nb-desc').value.trim(); const valor = parseFloat(document.getElementById('nb-valor').value)||0; if (!desc||!valor) { alert('Preencha a descrição e o valor.'); return; } dadosMes().despesas.push({ desc, valor }); document.getElementById('nb-desc').value=''; document.getElementById('nb-valor').value=''; renderizarDespesas(); recalcular(); toast('✅ Despesa adicionada!'); }
+function removerDespesa(i) { dadosMes().despesas.splice(i, 1); renderizarDespesas(); recalcular(); toast('🗑️ Despesa removida'); }
+function atualizarDespesa(i, valor) { dadosMes().despesas[i].valor = parseFloat(valor)||0; recalcular(); }
+function renderizarDespesas() { const lista = document.getElementById('lista-despesas'); lista.innerHTML = dadosMes().despesas.map((d,i) => `<div class="despesa-item"><div style="font-size:13px;font-weight:500;">${d.desc}</div><div style="display:flex;align-items:center;gap:8px;"><input class="input-value" style="width:110px;" type="number" value="${d.valor}" oninput="atualizarDespesa(${i}, this.value)"><button class="btn-remove" onclick="removerDespesa(${i})">✕</button></div></div>`).join(''); }
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('SW não registrado:', err));
+  });
+}
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC4E1Rs9k30ZtXoJdDOr_ydDHjEx-282Y0",
+    authDomain: "app-6cx-ocp.firebaseapp.com",
+    projectId: "app-6cx-ocp",
+    storageBucket: "app-6cx-ocp.firebasestorage.app",
+    messagingSenderId: "417997831087",
+    appId: "1:417997831087:web:9634433c55664589fe4d5a",
+    measurementId: "G-MWC5Q3ZRC7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  function estaEmWebView() {
+    const ua = navigator.userAgent || '';
+    return /; ?wv\)/i.test(ua) || (window.AndroidInterface !== undefined);
+  }
+
+  loginComGoogle = function() {
+    if (estaEmWebView()) {
+      alert("O login com Google não funciona dentro do app instalável (bloqueio do próprio Google para WebViews). Use e-mail/senha aqui no app, ou abra o site pelo navegador (Chrome/Safari) para entrar com o Google.");
+      return;
+    }
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        const dadosUsuario = {
+          nome: user.displayName || "Usuário",
+          email: user.email.toLowerCase()
+        };
+        entrarNoApp(dadosUsuario);
+        toast('✅ Autenticado via Google!');
+      })
+      .catch((error) => {
+        console.error("Erro no login com Google:", error.code, error.message);
+        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+          alert("Erro ao conectar com o Google (" + error.code + "). Se o popup foi bloqueado, permita pop-ups para este site nas configurações do navegador.");
+        }
+      });
+  }
+</script>
+</body>
+</html>
