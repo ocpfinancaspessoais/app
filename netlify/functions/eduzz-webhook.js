@@ -50,9 +50,10 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: 'Evento sem e-mail identificável. Nada gravado.' };
   }
 
-  const PRODUTOS = {
-    'MENTORIA_ID_AQUI': 365,
-    'CURSO_ID_AQUI': 180
+    const PRODUTOS = {
+    '3038286': 365, // Mentoria Premium Rumo à Prosperidade (EM GRUPO)
+    '3029745': 365, // Mentoria Premium Rumo à Prosperidade (INDIVIDUAL)
+    // 'CODIGO_DO_CURSO_AQUI': 180, // Curso — adicionar quando o produto for criado na Eduzz
   };
   const dias = PRODUTOS[produtoId];
 
