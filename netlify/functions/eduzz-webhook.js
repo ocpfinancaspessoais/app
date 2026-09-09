@@ -11,7 +11,7 @@ const db = admin.firestore();
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+    return { statusCode: 200, body: 'Endpoint ativo, aguardando eventos da Eduzz.' };
   }
 
   let payload;
