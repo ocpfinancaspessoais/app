@@ -1,36 +1,55 @@
+const crypto = require('crypto');
 const admin = require('firebase-admin');
 
 if (!admin.apps.length) {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
+  admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 }
-
 const db = admin.firestore();
+
+function assinaturaValida(corpoBruto, assinaturaRecebida) {
+  const chave = process.env.EDUZZ_WEBHOOK_SECRET;
+  if (!chave || !assinaturaRecebida) return false;
+  const esperado = crypto.createHmac('sha256', chave).update(corpoBruto).digest('hex');
+  try {
+    return crypto.timingSafeEqual(Buffer.from(esperado), Buffer.from(assinaturaRecebida));
+  } catch (e) {
+    return false;
+  }
+}
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 200, body: 'Endpoint ativo, aguardando eventos da Eduzz.' };
   }
 
+  const corpoBruto = event.body || '';
+  const assinaturaRecebida = event.headers['x-signature'] || event.headers['X-Signature'];
+
+  if (!assinaturaValida(corpoBruto, assinaturaRecebida)) {
+    console.log('Assinatura não confirmada. Corpo recebido:', corpoBruto);
+    return { statusCode: 200, body: 'Assinatura não confirmada — evento ignorado.' };
+  }
+
   let payload;
   try {
-    payload = JSON.parse(event.body);
+    payload = JSON.parse(corpoBruto);
   } catch (e) {
-    return { statusCode: 400, body: 'JSON inválido' };
+    return { statusCode: 200, body: 'JSON inválido — nada gravado.' };
   }
 
-  // ATENÇÃO: estes nomes de campo são um chute inicial.
-  // Vamos ajustar depois de ver o formato real que a Eduzz envia.
-  const email = (payload.cus_email || payload.email || '').toLowerCase().trim();
-  const produtoId = String(payload.product_cod || payload.trans_cod_produto || '');
+  // Log temporário só pra descobrirmos o formato real do campo "data"
+  console.log('Evento recebido:', payload.event);
+  console.log('Dados:', JSON.stringify(payload.data));
 
-    if (!email) {
-    return { statusCode: 200, body: 'Evento recebido (sem e-mail — provavelmente teste de verificação). Nada foi gravado.' };
+  const dados = payload.data || {};
+  const email = (dados.email || dados.cus_email || dados.customer_email || '').toString().toLowerCase().trim();
+  const produtoId = String(dados.product_cod || dados.produto_cod || dados.productId || '');
+
+  if (!email) {
+    return { statusCode: 200, body: 'Evento sem e-mail identificável. Nada gravado.' };
   }
 
-  // Mapeamento: código do produto na Eduzz -> dias de acesso PRO
   const PRODUTOS = {
     'MENTORIA_ID_AQUI': 365,
     'CURSO_ID_AQUI': 180
@@ -38,7 +57,7 @@ exports.handler = async (event) => {
   const dias = PRODUTOS[produtoId];
 
   if (!dias) {
-    return { statusCode: 200, body: 'Produto não mapeado, nada gravado. ID recebido: ' + produtoId };
+    return { statusCode: 200, body: 'Produto não mapeado (ID: ' + produtoId + '). Nada gravado.' };
   }
 
   const expiraEm = new Date(Date.now() + dias * 24 * 60 * 60 * 1000);
