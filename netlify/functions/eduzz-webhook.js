@@ -26,8 +26,8 @@ exports.handler = async (event) => {
   const email = (payload.cus_email || payload.email || '').toLowerCase().trim();
   const produtoId = String(payload.product_cod || payload.trans_cod_produto || '');
 
-  if (!email) {
-    return { statusCode: 400, body: 'E-mail não encontrado no payload' };
+    if (!email) {
+    return { statusCode: 200, body: 'Evento recebido (sem e-mail — provavelmente teste de verificação). Nada foi gravado.' };
   }
 
   // Mapeamento: código do produto na Eduzz -> dias de acesso PRO
