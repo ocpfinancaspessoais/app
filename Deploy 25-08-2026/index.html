@@ -671,8 +671,7 @@ const LIMITE_HISTORICO_MESES_GRATIS = 3;
 const DIAS_TRIAL_GRATIS = 30;
 
 function isPro() {
-  // TODO: substituir por checagem real via Digital Goods API / Firebase
-  return localStorage.getItem('cdp_pro_debug') === 'true';
+  return (window.statusProCache && window.statusProCache.ativo === true) || localStorage.getItem('cdp_pro_debug') === 'true';
 }
 
 /* Trial de 30 dias por pessoa, contado a partir de quando cada
@@ -752,9 +751,7 @@ const USERS_KEY = 'cdp_users';
 function getUsers() { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); }
 function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
 function switchTab(tab, e) { document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active')); document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none'; document.getElementById('form-cadastro').style.display = tab === 'cadastro' ? 'block' : 'none'; if (e && e.target) e.target.classList.add('active'); }
-function fazerCadastro() { const nome = document.getElementById('cad-nome').value.trim(); const email = document.getElementById('cad-email').value.trim().toLowerCase(); const senha = document.getElementById('cad-senha').value; const erroEl = document.getElementById('cad-erro'); if (!nome || !email || !senha) { erroEl.style.display='block'; erroEl.textContent='Preencha todos os campos.'; return; } if (senha.length < 6) { erroEl.style.display='block'; erroEl.textContent='Senha deve ter ao menos 6 caracteres.'; return; } const users = getUsers(); if (users[email]) { erroEl.style.display='block'; erroEl.textContent='Este e-mail já está cadastrado.'; return; } users[email] = { nome, email, senha }; saveUsers(users); entrarNoApp({ nome, email }); toast('✅ Conta criada! Bem-vindo(a)!'); }
-function fazerLogin() { const email = document.getElementById('login-email').value.trim().toLowerCase(); const senha = document.getElementById('login-senha').value; const erroEl = document.getElementById('login-erro'); const users = getUsers(); if (!users[email] || users[email].senha !== senha) { erroEl.style.display='block'; return; } erroEl.style.display = 'none'; entrarNoApp(users[email]); }
-function entrarNoApp(user) { estado.usuario = user; registrarDataCriacaoConta(user.email); carregarLocal(user.email); dadosMes(); document.getElementById('login-screen').style.display = 'none'; document.getElementById('app-screen').style.display = 'block'; document.getElementById('app-footer').style.display = 'block'; document.getElementById('user-avatar').textContent = user.nome.charAt(0).toUpperCase(); sincronizarInputs(); atualizarSeletorMeses(); renderizarDespesas(); renderizarDividas(); renderizarDeducoes(); recalcular(); }
+function entrarNoApp(user) { estado.usuario = user; registrarDataCriacaoConta(user.email); carregarLocal(user.email); dadosMes(); document.getElementById('login-screen').style.display = 'none'; document.getElementById('app-screen').style.display = 'block'; document.getElementById('app-footer').style.display = 'block'; document.getElementById('user-avatar').textContent = user.nome.charAt(0).toUpperCase(); sincronizarInputs(); atualizarSeletorMeses(); renderizarDespesas(); renderizarDividas(); renderizarDeducoes(); recalcular(); buscarStatusProFirestore(user.email); }
 function sincronizarInputs() { const d = dadosMes(); document.getElementById('renda-bruta').value = d.rendaBruta; document.getElementById('pct-lf').value = d.pcts.lf; document.getElementById('pct-dlp').value = d.pcts.dlp; document.getElementById('pct-edu').value = d.pcts.edu; document.getElementById('pct-div').value = d.pcts.div; document.getElementById('pct-doa').value = d.pcts.doa; }
 function fazerLogout() { salvarLocal(); estado.usuario = null; document.getElementById('app-screen').style.display = 'none'; document.getElementById('app-footer').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; document.getElementById('login-email').value = ''; document.getElementById('login-senha').value = ''; }
 function showPage(id, e) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active')); document.getElementById('page-' + id).classList.add('active'); if (e && e.target) e.target.classList.add('active'); if (id === 'historico') renderizarHistorico(); }
@@ -1093,7 +1090,8 @@ if ('serviceWorker' in navigator) {
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC4E1Rs9k30ZtXoJdDOr_ydDHjEx-282Y0",
@@ -1108,6 +1106,7 @@ if ('serviceWorker' in navigator) {
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
   const auth = getAuth(app);
+  const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
   function estaEmWebView() {
@@ -1136,6 +1135,57 @@ if ('serviceWorker' in navigator) {
           alert("Erro ao conectar com o Google (" + error.code + "). Se o popup foi bloqueado, permita pop-ups para este site nas configurações do navegador.");
         }
       });
+  }
+
+  window.fazerCadastro = async function() {
+    const nome = document.getElementById('cad-nome').value.trim();
+    const email = document.getElementById('cad-email').value.trim().toLowerCase();
+    const senha = document.getElementById('cad-senha').value;
+    const erroEl = document.getElementById('cad-erro');
+    erroEl.style.display = 'none';
+    if (!nome || !email || !senha) { erroEl.style.display='block'; erroEl.textContent='Preencha todos os campos.'; return; }
+    if (senha.length < 6) { erroEl.style.display='block'; erroEl.textContent='Senha deve ter ao menos 6 caracteres.'; return; }
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, senha);
+      await updateProfile(cred.user, { displayName: nome });
+      entrarNoApp({ nome, email });
+      toast('✅ Conta criada! Bem-vindo(a)!');
+    } catch (err) {
+      erroEl.style.display = 'block';
+      if (err.code === 'auth/email-already-in-use') erroEl.textContent = 'Este e-mail já está cadastrado.';
+      else if (err.code === 'auth/invalid-email') erroEl.textContent = 'E-mail inválido.';
+      else erroEl.textContent = 'Não foi possível criar a conta. Tente novamente.';
+    }
+  }
+
+  window.fazerLogin = async function() {
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const senha = document.getElementById('login-senha').value;
+    const erroEl = document.getElementById('login-erro');
+    erroEl.style.display = 'none';
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, senha);
+      entrarNoApp({ nome: cred.user.displayName || 'Usuário', email: cred.user.email.toLowerCase() });
+    } catch (err) {
+      erroEl.style.display = 'block';
+      erroEl.textContent = 'E-mail ou senha incorretos.';
+    }
+  }
+
+  window.buscarStatusProFirestore = async function(email) {
+    window.statusProCache = { ativo: false };
+    try {
+      const refDoc = doc(db, 'assinantes_pro', email);
+      const snap = await getDoc(refDoc);
+      if (snap.exists()) {
+        const dados = snap.data();
+        const proAte = dados.proAte ? new Date(dados.proAte) : null;
+        window.statusProCache.ativo = proAte ? (proAte.getTime() > Date.now()) : false;
+      }
+    } catch (e) {
+      console.warn('Não foi possível verificar status PRO:', e);
+    }
+    renderizarDividas(); renderizarDeducoes(); renderizarHistorico(); atualizarUiBackupPro(); recalcular();
   }
 </script>
 </body>
