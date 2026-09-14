@@ -38,23 +38,26 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: 'JSON inválido — nada gravado.' };
   }
 
-  // Log temporário só pra descobrirmos o formato real do campo "data"
   console.log('Evento recebido:', payload.event);
   console.log('Dados:', JSON.stringify(payload.data));
 
   const dados = payload.data || {};
-  const email = (dados.email || dados.cus_email || dados.customer_email || '').toString().toLowerCase().trim();
-  const produtoId = String(dados.product_cod || dados.produto_cod || dados.productId || '');
+  const email = ((dados.buyer && dados.buyer.email) || '').toString().toLowerCase().trim();
+
+  const PRODUTOS = {
+    '3038286': 365, // Mentoria Premium Rumo à Prosperidade (EM GRUPO)
+    '3029745': 365, // Mentoria Premium Rumo à Prosperidade (INDIVIDUAL)
+    // 'CODIGO_DO_CURSO_AQUI': 180, // Curso — adicionar quando o produto for criado na Eduzz
+  };
+
+  const itens = Array.isArray(dados.items) ? dados.items : [];
+  const itemValido = itens.find((item) => PRODUTOS[String(item.productId)]);
+  const produtoId = itemValido ? String(itemValido.productId) : '';
 
   if (!email) {
     return { statusCode: 200, body: 'Evento sem e-mail identificável. Nada gravado.' };
   }
 
-    const PRODUTOS = {
-    '3038286': 365, // Mentoria Premium Rumo à Prosperidade (EM GRUPO)
-    '3029745': 365, // Mentoria Premium Rumo à Prosperidade (INDIVIDUAL)
-    // 'CODIGO_DO_CURSO_AQUI': 180, // Curso — adicionar quando o produto for criado na Eduzz
-  };
   const dias = PRODUTOS[produtoId];
 
   if (!dias) {
