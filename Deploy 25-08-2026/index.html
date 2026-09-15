@@ -622,7 +622,8 @@
     <div class="pro-lock-icon">✨</div>
     <h3>Recurso PRO</h3>
     <p id="pro-modal-texto">Assine o plano PRO para desbloquear este recurso e ir além no seu Código da Prosperidade.</p>
-    <button class="btn-pro" onclick="irParaAssinaturaPro()">Assinar PRO</button>
+    <button class="btn-pro" onclick="irParaAssinaturaPro('mensal')" style="margin-bottom:8px;">✨ Assinar Mensal — R$ 5,90</button>
+    <button class="btn-pro" onclick="irParaAssinaturaPro('anual')">✨ Assinar Anual — R$ 59,90</button>
     <button class="btn-fechar-modal" onclick="fecharModalPro()">Agora não</button>
   </div>
 </div>
@@ -655,16 +656,7 @@ carregarTema();
 
 let loginComGoogle;
 
-/* ===================== PRO / MONETIZAÇÃO =====================
-   Nesta etapa (código publicado só no Netlify), ainda NÃO existe
-   validação real de pagamento — isso vem depois, com a integração
-   da Digital Goods API (via PWABuilder/manifesto) + Firebase para
-   guardar o status de assinatura entre aparelhos.
-   Por enquanto, isPro() sempre retorna false: todo mundo vê os
-   limites e os avisos de PRO, mas ninguém é bloqueado por engano
-   nem cobrado. Quando a integração real existir, troque apenas
-   o corpo desta função para consultar o status verdadeiro.
-================================================================ */
+/* ===================== PRO / MONETIZAÇÃO ===================== */
 const LIMITE_DIVIDAS_GRATIS = 2;
 const LIMITE_DEDUCOES_GRATIS = 2;
 const LIMITE_HISTORICO_MESES_GRATIS = 3;
@@ -716,11 +708,59 @@ function abrirModalPro(origem) {
   document.getElementById('pro-modal-overlay').classList.add('show');
 }
 function fecharModalPro() { document.getElementById('pro-modal-overlay').classList.remove('show'); }
-function irParaAssinaturaPro() {
-  // TODO: quando a Digital Goods API estiver integrada, chamar aqui
-  // o fluxo de compra real da assinatura PRO na Google Play.
-  toast('🚧 Assinatura PRO chegando em breve!');
-  fecharModalPro();
+
+const PLANOS_PRO = {
+  mensal: 'assinatura_pro_mensal',
+  anual: 'assinatura_pro_anual'
+};
+
+async function irParaAssinaturaPro(tipoPlano) {
+  const sku = PLANOS_PRO[tipoPlano];
+  if (!sku) return;
+
+  if (!('getDigitalGoodsService' in window)) {
+    toast('⚠️ Assinatura só funciona pelo app instalado da Play Store.');
+    fecharModalPro();
+    return;
+  }
+
+  try {
+    await window.getDigitalGoodsService('https://play.google.com/billing');
+    const paymentMethods = [{
+      supportedMethods: 'https://play.google.com/billing',
+      data: { sku: sku }
+    }];
+    const paymentDetails = { total: { label: 'Total', amount: { currency: 'BRL', value: '0' } } };
+    const request = new PaymentRequest(paymentMethods, paymentDetails);
+    const paymentResponse = await request.show();
+    await paymentResponse.complete('success');
+
+    toast('✅ Compra realizada! Confirmando seu acesso PRO...');
+    fecharModalPro();
+
+    if (estado.usuario) {
+      confirmarCompraNoServidor(estado.usuario.email, sku, paymentResponse.details);
+    }
+  } catch (err) {
+    console.error('Erro na compra:', err);
+    if (err.name !== 'AbortError') {
+      toast('❌ Não foi possível completar a assinatura.');
+    }
+    fecharModalPro();
+  }
+}
+
+async function confirmarCompraNoServidor(email, sku, detalhes) {
+  try {
+    await fetch('/.netlify/functions/verificar-compra-play', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, sku: sku, purchaseToken: detalhes && detalhes.purchaseToken })
+    });
+    setTimeout(() => buscarStatusProFirestore(email), 3000);
+  } catch (e) {
+    console.warn('Não foi possível confirmar a compra no servidor:', e);
+  }
 }
 
 const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
