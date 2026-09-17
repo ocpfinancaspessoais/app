@@ -1,3 +1,6 @@
 [build]
   publish = "Deploy 25-08-2026"
   functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
