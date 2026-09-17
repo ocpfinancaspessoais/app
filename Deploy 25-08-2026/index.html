@@ -410,7 +410,7 @@
     <button class="nav-tab active" onclick="showPage('visao-geral', event)">Visão Geral</button>
     <button class="nav-tab" onclick="showPage('caixinhas', event)">6 Caixinhas</button>
     <button class="nav-tab" onclick="showPage('dividas', event)">Dívidas</button>
-    <button class="nav-tab" onclick="showPage('nec-basicas', event)">Nec. Básicas</button>
+    <button class="nav-tab" onclick="showPage('nec-basicas', event)">Necessidades Básicas</button>
     <button class="nav-tab" onclick="showPage('ipf', event)">IPF</button>
     <button class="nav-tab" onclick="showPage('historico', event)">Histórico</button>
     <button class="nav-tab" onclick="showPage('configurar', event)">Configurar</button>
@@ -438,7 +438,7 @@
       <div id="lista-deducoes"></div>
       <div id="deducoes-form-wrapper">
         <div class="add-divida-form">
-          <div class="form-group-sm" style="margin-bottom:10px;"><label>Nome</label><input type="text" id="ded-nome" placeholder="Ex: Dízimos/Custo de mercadoria"></div>
+          <div class="form-group-sm" style="margin-bottom:10px;"><label>Nome</label><input type="text" id="ded-nome" placeholder="Ex: Custo de mercadoria, capital de giro, Dízimos/"></div>
           <div class="form-row-2">
             <div class="form-group-sm">
               <label>Tipo</label>
@@ -469,11 +469,11 @@
     <div class="card">
       <div class="card-title">Distribuição das 6 Caixinhas</div>
       <div class="caixinhas-grid">
-        <div class="caixinha-card cx-nb"><div class="caixinha-emoji">🏠</div><div class="caixinha-name">Nec. Básicas</div><div class="caixinha-value" id="cx-nb-val">R$ 0</div><div class="caixinha-pct" id="cx-nb-pct">—%</div></div>
-        <div class="caixinha-card cx-lf"><div class="caixinha-emoji">🏦</div><div class="caixinha-name">Liberdade Fin.</div><div class="caixinha-value" id="cx-lf-val">R$ 0</div><div class="caixinha-pct" id="cx-lf-pct">10%</div></div>
-        <div class="caixinha-card cx-dlp"><div class="caixinha-emoji">🛡️</div><div class="caixinha-name">Desp. Longo Prazo</div><div class="caixinha-value" id="cx-dlp-val">R$ 0</div><div class="caixinha-pct" id="cx-dlp-pct">10%</div></div>
+        <div class="caixinha-card cx-nb"><div class="caixinha-emoji">🏠</div><div class="caixinha-name">Necessidases Básicas</div><div class="caixinha-value" id="cx-nb-val">R$ 0</div><div class="caixinha-pct" id="cx-nb-pct">—%</div></div>
+        <div class="caixinha-card cx-lf"><div class="caixinha-emoji">🏦</div><div class="caixinha-name">Liberdade Fininanceira</div><div class="caixinha-value" id="cx-lf-val">R$ 0</div><div class="caixinha-pct" id="cx-lf-pct">10%</div></div>
+        <div class="caixinha-card cx-dlp"><div class="caixinha-emoji">🛡️</div><div class="caixinha-name">Despesas de Longo Prazo/Reserva de Emergência</div><div class="caixinha-value" id="cx-dlp-val">R$ 0</div><div class="caixinha-pct" id="cx-dlp-pct">10%</div></div>
         <div class="caixinha-card cx-edu"><div class="caixinha-emoji">📚</div><div class="caixinha-name">Educação</div><div class="caixinha-value" id="cx-edu-val">R$ 0</div><div class="caixinha-pct" id="cx-edu-pct">10%</div></div>
-        <div class="caixinha-card cx-div"><div class="caixinha-emoji">🎉</div><div class="caixinha-name">Diversão</div><div class="caixinha-value" id="cx-div-val">R$ 0</div><div class="caixinha-pct" id="cx-div-pct">10%</div></div>
+        <div class="caixinha-card cx-div"><div class="caixinha-emoji">🎉</div><div class="caixinha-name">Diversão/Lazer/Desfrute</div><div class="caixinha-value" id="cx-div-val">R$ 0</div><div class="caixinha-pct" id="cx-div-pct">10%</div></div>
         <div class="caixinha-card cx-doa"><div class="caixinha-emoji">🤝</div><div class="caixinha-name">Doações</div><div class="caixinha-value" id="cx-doa-val">R$ 0</div><div class="caixinha-pct" id="cx-doa-pct">10%</div></div>
       </div>
     </div>
@@ -583,15 +583,16 @@
   </div>
 
   <div class="page content" id="page-configurar">
-    <div class="section-title">Configurações</div>
+    <div class="section-title">
+    </div>
     <p class="section-sub">Personalize os percentuais das suas caixinhas</p>
     <div class="card">
       <div class="card-title">Percentuais das caixinhas (5 configuráveis)</div>
       <p style="font-size:12px; color:var(--muted); margin-bottom:16px;">As Necessidades Básicas recebem o que restar após distribuir as demais.</p>
       <div class="pct-row"><div class="pct-dot" style="background:var(--gold)"></div><span class="pct-name">🏦 Liberdade Financeira</span><input class="pct-input" type="number" id="pct-lf" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
-      <div class="pct-row"><div class="pct-dot" style="background:var(--purple)"></div><span class="pct-name">🛡️ Despesas de Longo Prazo</span><input class="pct-input" type="number" id="pct-dlp" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
+      <div class="pct-row"><div class="pct-dot" style="background:var(--purple)"></div><span class="pct-name">🛡️ Despesas de Longo Prazo/Reserva de Emergência</span><input class="pct-input" type="number" id="pct-dlp" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
       <div class="pct-row"><div class="pct-dot" style="background:#5b9cf0"></div><span class="pct-name">📚 Educação</span><input class="pct-input" type="number" id="pct-edu" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
-      <div class="pct-row"><div class="pct-dot" style="background:#f06b9a"></div><span class="pct-name">🎉 Diversão</span><input class="pct-input" type="number" id="pct-div" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
+      <div class="pct-row"><div class="pct-dot" style="background:#f06b9a"></div><span class="pct-name">🎉 Diversão/Lazer/Desfrute</span><input class="pct-input" type="number" id="pct-div" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
       <div class="pct-row"><div class="pct-dot" style="background:var(--ok)"></div><span class="pct-name">🤝 Doações</span><input class="pct-input" type="number" id="pct-doa" value="10" min="0" max="100" oninput="atualizarPcts()"><span class="pct-symbol">%</span></div>
       <div class="pct-total"><span>🏠 Necessidades Básicas (restante)</span><span class="pct-total-val" id="pct-nb-calc">50%</span></div>
       <div style="margin-top:12px; padding:12px; background:var(--navy3); border-radius:10px; text-align:center;">
@@ -755,7 +756,7 @@ async function confirmarCompraNoServidor(email, sku, detalhes) {
     await fetch('/.netlify/functions/verificar-compra-play', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, sku: sku, purchaseToken: detalhes && detalhes.purchaseToken })
+      body: JSON.stringify({ email: email, productId: sku, purchaseToken: detalhes && detalhes.purchaseToken })
     });
     setTimeout(() => buscarStatusProFirestore(email), 3000);
   } catch (e) {
@@ -1219,7 +1220,7 @@ if ('serviceWorker' in navigator) {
       const snap = await getDoc(refDoc);
       if (snap.exists()) {
         const dados = snap.data();
-        const proAte = dados.proAte ? new Date(dados.proAte) : null;
+        const proAte = dados.proAte && typeof dados.proAte.toDate === 'function' ? dados.proAte.toDate() : (dados.proAte ? new Date(dados.proAte) : null);
         window.statusProCache.ativo = proAte ? (proAte.getTime() > Date.now()) : false;
       }
     } catch (e) {
