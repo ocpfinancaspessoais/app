@@ -147,6 +147,8 @@
   .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
   .btn-primary:active { transform: translateY(0); }
   .login-error { color: var(--danger); font-size: 13px; text-align: center; margin-top: 12px; display: none; }
+  .btn-link { background: none; border: none; color: var(--teal); font-size: 13px; font-family: var(--font-body); cursor: pointer; text-decoration: underline; padding: 6px; }
+  .btn-link:hover { color: var(--teal2); }
   .btn-google { width: 100%; background: #fff; color: #3c4043; font-family: var(--font-body); font-size: 14px; font-weight: 600; padding: 13px 15px; border: 1.5px solid #dadce0; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: box-shadow 0.2s, background 0.2s; }
   .btn-google:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.2); background: #f8f8f8; }
   .btn-google svg { flex-shrink: 0; }
@@ -322,6 +324,9 @@
       </div>
       <button class="btn-primary" onclick="fazerLogin()">Entrar na minha conta</button>
       <div class="login-error" id="login-erro">E-mail ou senha incorretos.</div>
+      <div style="text-align:center; margin-top:14px;">
+        <button type="button" class="btn-link" onclick="recuperarSenha()">Esqueci minha senha</button>
+      </div>
     </div>
     <div id="form-cadastro" style="display:none">
       <button class="btn-google" onclick="loginComGoogle()">
@@ -1131,7 +1136,7 @@ if ('serviceWorker' in navigator) {
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1199,11 +1204,30 @@ if ('serviceWorker' in navigator) {
     }
   }
 
+  window.recuperarSenha = async function() {
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const erroEl = document.getElementById('login-erro');
+    erroEl.style.display = 'block';
+    erroEl.style.color = 'var(--danger)';
+    if (!email) { erroEl.textContent = 'Digite seu e-mail acima e toque em "Esqueci minha senha".'; return; }
+    try {
+      auth.languageCode = 'pt';
+      await sendPasswordResetEmail(auth, email);
+      erroEl.style.color = 'var(--ok)';
+      erroEl.textContent = 'Se esse e-mail tiver conta, enviamos o link para criar uma nova senha. Verifique também o spam.';
+    } catch (err) {
+      if (err.code === 'auth/invalid-email') erroEl.textContent = 'E-mail inválido.';
+      else if (err.code === 'auth/too-many-requests') erroEl.textContent = 'Muitas tentativas. Aguarde alguns minutos.';
+      else erroEl.textContent = 'Não foi possível enviar o e-mail. Tente novamente.';
+    }
+  }
+
   window.fazerLogin = async function() {
     const email = document.getElementById('login-email').value.trim().toLowerCase();
     const senha = document.getElementById('login-senha').value;
     const erroEl = document.getElementById('login-erro');
     erroEl.style.display = 'none';
+    erroEl.style.color = '';
     try {
       const cred = await signInWithEmailAndPassword(auth, email, senha);
       entrarNoApp({ nome: cred.user.displayName || 'Usuário', email: cred.user.email.toLowerCase() });
