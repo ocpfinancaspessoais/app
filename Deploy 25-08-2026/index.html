@@ -676,8 +676,17 @@ function isPro() {
    um criou a conta / usou o app pela primeira vez (não é uma
    data fixa pro app todo — cada usuário tem sua própria janela). */
 const CRIACAO_KEY = 'cdp_criacao_contas';
-function registrarDataCriacaoConta(email) {
+function registrarDataCriacaoConta(email, criadoEm) {
   const registro = JSON.parse(localStorage.getItem(CRIACAO_KEY) || '{}');
+  if (criadoEm) {
+    // Data oficial de criação da conta (vem do Firebase): vale em qualquer aparelho
+    const dataOficial = new Date(criadoEm);
+    if (!isNaN(dataOficial.getTime())) {
+      registro[email] = dataOficial.toISOString();
+      localStorage.setItem(CRIACAO_KEY, JSON.stringify(registro));
+      return;
+    }
+  }
   if (!registro[email]) {
     registro[email] = new Date().toISOString();
     localStorage.setItem(CRIACAO_KEY, JSON.stringify(registro));
@@ -797,7 +806,7 @@ const USERS_KEY = 'cdp_users';
 function getUsers() { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); }
 function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
 function switchTab(tab, e) { document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active')); document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none'; document.getElementById('form-cadastro').style.display = tab === 'cadastro' ? 'block' : 'none'; if (e && e.target) e.target.classList.add('active'); }
-function entrarNoApp(user) { estado.usuario = user; registrarDataCriacaoConta(user.email); carregarLocal(user.email); dadosMes(); document.getElementById('login-screen').style.display = 'none'; document.getElementById('app-screen').style.display = 'block'; document.getElementById('app-footer').style.display = 'block'; document.getElementById('user-avatar').textContent = user.nome.charAt(0).toUpperCase(); sincronizarInputs(); atualizarSeletorMeses(); renderizarDespesas(); renderizarDividas(); renderizarDeducoes(); recalcular(); buscarStatusProFirestore(user.email); }
+function entrarNoApp(user) { estado.usuario = user; registrarDataCriacaoConta(user.email, user.criadoEm); carregarLocal(user.email); dadosMes(); document.getElementById('login-screen').style.display = 'none'; document.getElementById('app-screen').style.display = 'block'; document.getElementById('app-footer').style.display = 'block'; document.getElementById('user-avatar').textContent = user.nome.charAt(0).toUpperCase(); sincronizarInputs(); atualizarSeletorMeses(); renderizarDespesas(); renderizarDividas(); renderizarDeducoes(); recalcular(); buscarStatusProFirestore(user.email); }
 function sincronizarInputs() { const d = dadosMes(); document.getElementById('renda-bruta').value = d.rendaBruta; document.getElementById('pct-lf').value = d.pcts.lf; document.getElementById('pct-dlp').value = d.pcts.dlp; document.getElementById('pct-edu').value = d.pcts.edu; document.getElementById('pct-div').value = d.pcts.div; document.getElementById('pct-doa').value = d.pcts.doa; }
 function fazerLogout() { salvarLocal(); estado.usuario = null; document.getElementById('app-screen').style.display = 'none'; document.getElementById('app-footer').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; document.getElementById('login-email').value = ''; document.getElementById('login-senha').value = ''; }
 function showPage(id, e) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active')); document.getElementById('page-' + id).classList.add('active'); if (e && e.target) e.target.classList.add('active'); if (id === 'historico') renderizarHistorico(); }
@@ -1170,7 +1179,8 @@ if ('serviceWorker' in navigator) {
         const user = result.user;
         const dadosUsuario = {
           nome: user.displayName || "Usuário",
-          email: user.email.toLowerCase()
+          email: user.email.toLowerCase(),
+          criadoEm: user.metadata && user.metadata.creationTime
         };
         entrarNoApp(dadosUsuario);
         toast('✅ Autenticado via Google!');
@@ -1194,7 +1204,7 @@ if ('serviceWorker' in navigator) {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, senha);
       await updateProfile(cred.user, { displayName: nome });
-      entrarNoApp({ nome, email });
+      entrarNoApp({ nome, email, criadoEm: cred.user.metadata && cred.user.metadata.creationTime });
       toast('✅ Conta criada! Bem-vindo(a)!');
     } catch (err) {
       erroEl.style.display = 'block';
@@ -1230,7 +1240,7 @@ if ('serviceWorker' in navigator) {
     erroEl.style.color = '';
     try {
       const cred = await signInWithEmailAndPassword(auth, email, senha);
-      entrarNoApp({ nome: cred.user.displayName || 'Usuário', email: cred.user.email.toLowerCase() });
+      entrarNoApp({ nome: cred.user.displayName || 'Usuário', email: cred.user.email.toLowerCase(), criadoEm: cred.user.metadata && cred.user.metadata.creationTime });
     } catch (err) {
       erroEl.style.display = 'block';
       erroEl.textContent = 'E-mail ou senha incorretos.';
