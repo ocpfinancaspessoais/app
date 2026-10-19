@@ -1,6 +1,6 @@
 // Service worker simples — necessário para o site ser reconhecido como PWA
 // e para o PWABuilder conseguir gerar o pacote Android (TWA).
-const CACHE_NAME = 'codigo-prosperidade-v1';
+const CACHE_NAME = 'codigo-prosperidade-v2';
 const ASSETS = [
   '/',
   '/index.html',
