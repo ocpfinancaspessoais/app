@@ -739,8 +739,13 @@ async function irParaAssinaturaPro(tipoPlano) {
     return;
   }
 
+  let etapa = 'conectando à Play Store';
   try {
-    await window.getDigitalGoodsService('https://play.google.com/billing');
+    const servicoPlay = await window.getDigitalGoodsService('https://play.google.com/billing');
+    etapa = 'buscando o produto "' + sku + '" na Play Store';
+    const produtos = await servicoPlay.getDetails([sku]);
+    if (!produtos || !produtos.length) throw new Error('Produto "' + sku + '" não encontrado na Play Store (confira o ID no Play Console).');
+    etapa = 'abrindo a tela de pagamento';
     const paymentMethods = [{
       supportedMethods: 'https://play.google.com/billing',
       data: { sku: sku }
@@ -760,6 +765,8 @@ async function irParaAssinaturaPro(tipoPlano) {
     console.error('Erro na compra:', err);
     if (err.name !== 'AbortError') {
       toast('❌ Não foi possível completar a assinatura.');
+      // DIAGNÓSTICO TEMPORÁRIO: mostra o erro real (pode remover depois de resolver)
+      alert('Falhou na etapa: ' + etapa + '\n\nErro: ' + err.name + ' — ' + err.message);
     }
     fecharModalPro();
   }
