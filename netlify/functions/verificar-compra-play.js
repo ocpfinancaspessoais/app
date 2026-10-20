@@ -1,31 +1,29 @@
 // netlify/functions/verificar-compra-play.js
 //
-// Recebe do app (cliente autenticado com Firebase) o purchaseToken retornado
-// pela Digital Goods API depois de uma compra bem-sucedida, valida esse token
-// diretamente com a Google Play Developer API (Android Publisher) e, se a
-// assinatura estiver ativa, grava/atualiza o documento em assinantes_pro/{email}
-// no Firestore — no mesmo padrão do eduzz-webhook.js.
+// 1) Compra nova: recebe email + purchaseToken + productId do app, valida com a
+//    Google Play Developer API, confirma (acknowledge) a assinatura e grava
+//    assinantes_pro/{email} com proAte = data de vencimento real informada pelo Google.
+// 2) Renovação: se vier { email, renovar: true }, usa o purchaseToken já guardado
+//    no Firestore, consulta a Google de novo e atualiza o proAte.
 
 const { google } = require('googleapis');
 const admin = require('firebase-admin');
 
-// Inicializa o Firebase Admin apenas uma vez (reaproveitado entre invocações)
 if (!admin.apps.length) {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
+  admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 }
 const db = admin.firestore();
 
-// Nome do pacote do app publicado no Play Console
 const PACKAGE_NAME = 'br.com.ocodigodaprosperidade.app';
 
-// Mapa dos IDs de produto de assinatura -> quantos dias de acesso PRO cada um libera
+// Dias de acesso usados só como reserva, caso a Google não informe o vencimento
 const PRODUTOS_ASSINATURA = {
   assinatura_pro_mensal: 31,
   assinatura_pro_anual: 366,
 };
+
+const resp = (statusCode, obj) => ({ statusCode, body: JSON.stringify(obj) });
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -33,82 +31,98 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { email, purchaseToken, productId } = JSON.parse(event.body || '{}');
+    const body = JSON.parse(event.body || '{}');
+    const email = String(body.email || '').trim().toLowerCase();
+    let purchaseToken = body.purchaseToken;
+    let productId = body.productId;
 
-    if (!email || !purchaseToken || !productId) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ erro: 'Faltam campos: email, purchaseToken ou productId' }),
-      };
+    if (!email) return resp(400, { erro: 'Falta o campo: email' });
+
+    const docRef = db.collection('assinantes_pro').doc(email);
+
+    // Modo renovação: pega token e produto que já estão guardados
+    if (body.renovar === true) {
+      const snap = await docRef.get();
+      const salvo = snap.exists ? snap.data() : null;
+      if (!salvo || salvo.origem !== 'google_play' || !salvo.purchaseToken || !salvo.produtoId) {
+        return resp(200, { sucesso: false, motivo: 'Sem assinatura do Google Play para renovar' });
+      }
+      purchaseToken = salvo.purchaseToken;
+      productId = salvo.produtoId;
     }
 
+    if (!purchaseToken || !productId) {
+      return resp(400, { erro: 'Faltam campos: purchaseToken ou productId' });
+    }
     if (!PRODUTOS_ASSINATURA[productId]) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ erro: `productId desconhecido: ${productId}` }),
-      };
+      return resp(400, { erro: `productId desconhecido: ${productId}` });
     }
 
-    // Autentica na Google Play Developer API usando a service account
     const serviceAccountPlay = JSON.parse(process.env.GOOGLE_PLAY_SERVICE_ACCOUNT);
     const auth = new google.auth.GoogleAuth({
       credentials: serviceAccountPlay,
       scopes: ['https://www.googleapis.com/auth/androidpublisher'],
     });
+    const androidpublisher = google.androidpublisher({ version: 'v3', auth });
 
-    const androidpublisher = google.androidpublisher({
-      version: 'v3',
-      auth,
-    });
-
-    // Consulta o status real da assinatura na Google
     const resposta = await androidpublisher.purchases.subscriptionsv2.get({
       packageName: PACKAGE_NAME,
       token: purchaseToken,
     });
+    const dados = resposta.data;
+    const estado = dados.subscriptionState;
 
-    const dadosAssinatura = resposta.data;
-    const estadoAssinatura = dadosAssinatura.subscriptionState;
+    // Vencimento real informado pela Google
+    const item = (dados.lineItems || []).find((i) => i.productId === productId) || (dados.lineItems || [])[0];
+    let proAte = item && item.expiryTime ? new Date(item.expiryTime) : null;
+    const agora = new Date();
 
-    // Estados considerados "ativo" pela Google Play Developer API
-    const estadosAtivos = ['SUBSCRIPTION_STATE_ACTIVE', 'SUBSCRIPTION_STATE_IN_GRACE_PERIOD'];
+    // ATIVA e CARÊNCIA valem; CANCELADA (sem renovar) vale até o vencimento
+    const ativo = estado === 'SUBSCRIPTION_STATE_ACTIVE';
+    const carencia = estado === 'SUBSCRIPTION_STATE_IN_GRACE_PERIOD';
+    const canceladaAindaValida = estado === 'SUBSCRIPTION_STATE_CANCELED' && proAte && proAte > agora;
 
-    if (!estadosAtivos.includes(estadoAssinatura)) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          sucesso: false,
-          motivo: `Assinatura não está ativa (estado: ${estadoAssinatura})`,
-        }),
-      };
+    if (!ativo && !carencia && !canceladaAindaValida) {
+      return resp(200, { sucesso: false, motivo: `Assinatura não está ativa (estado: ${estado})` });
     }
 
-    // Calcula até quando vale o acesso PRO
-    const dias = PRODUTOS_ASSINATURA[productId];
-    const proAte = new Date();
-    proAte.setDate(proAte.getDate() + dias);
+    if (!proAte || isNaN(proAte.getTime())) {
+      proAte = new Date();
+      proAte.setDate(proAte.getDate() + PRODUTOS_ASSINATURA[productId]);
+    }
+    if (carencia && proAte <= agora) {
+      proAte = new Date(agora.getTime() + 3 * 24 * 60 * 60 * 1000);
+    }
 
-    // Grava/atualiza o documento no Firestore, igual ao webhook da Eduzz
-    await db.collection('assinantes_pro').doc(email).set(
+    // Confirma (acknowledge) a compra: se não for confirmada em 3 dias, o Google reembolsa sozinho
+    if (dados.acknowledgementState === 'ACKNOWLEDGEMENT_STATE_PENDING') {
+      try {
+        await androidpublisher.purchases.subscriptions.acknowledge({
+          packageName: PACKAGE_NAME,
+          subscriptionId: productId,
+          token: purchaseToken,
+          requestBody: {},
+        });
+      } catch (e) {
+        console.error('Falha ao confirmar (acknowledge) a assinatura:', e && e.message);
+      }
+    }
+
+    await docRef.set(
       {
         proAte: admin.firestore.Timestamp.fromDate(proAte),
         origem: 'google_play',
         produtoId: productId,
         purchaseToken,
+        estadoGoogle: estado,
         atualizadoEm: admin.firestore.FieldValue.serverTimestamp(),
       },
       { merge: true }
     );
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ sucesso: true, proAte: proAte.toISOString() }),
-    };
+    return resp(200, { sucesso: true, proAte: proAte.toISOString() });
   } catch (erro) {
     console.error('Erro ao verificar compra do Google Play:', erro);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ erro: 'Erro interno ao verificar a compra' }),
-    };
+    return resp(500, { erro: 'Erro interno ao verificar a compra' });
   }
 };
