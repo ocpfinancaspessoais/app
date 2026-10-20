@@ -1,8 +1,13 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "br.com.ocodigodaprosperidade.app",
-        "sha256_cert_fingerprints": ["2C:81:D3:59:9E:E8:B2:2A:82:8C:CD:7D:BA:84:D8:70:C6:DD:A6:3C:31:5B:76:26:D7:26:31:3B:34:8A:D4:9A"]
-      }
-    }]
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "br.com.ocodigodaprosperidade.app",
+      "sha256_cert_fingerprints": [
+        "14:09:59:B1:59:AC:D5:9C:84:58:65:9A:80:8B:9F:8C:B2:A4:2F:5A:27:AD:A5:09:38:78:06:B4:02:E4:46:92",
+        "2C:81:D3:59:9E:E8:B2:2A:82:8C:CD:7D:BA:84:D8:70:C6:DD:A6:3C:31:5B:76:26:D7:26:31:3B:34:8A:D4:9A"
+      ]
+    }
+  }
+]
