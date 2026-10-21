@@ -753,14 +753,13 @@ async function irParaAssinaturaPro(tipoPlano) {
     const paymentDetails = { total: { label: 'Total', amount: { currency: 'BRL', value: '0' } } };
     const request = new PaymentRequest(paymentMethods, paymentDetails);
     const paymentResponse = await request.show();
-    const detalhesCompra = paymentResponse.details; // guarda antes de finalizar
     await paymentResponse.complete('success');
 
     toast('✅ Compra realizada! Confirmando seu acesso PRO...');
     fecharModalPro();
 
     if (estado.usuario) {
-      confirmarCompraNoServidor(estado.usuario.email, sku, detalhesCompra);
+      confirmarCompraNoServidor(estado.usuario.email, sku, paymentResponse.details);
     }
   } catch (err) {
     console.error('Erro na compra:', err);
@@ -1261,21 +1260,8 @@ if ('serviceWorker' in navigator) {
       const refDoc = doc(db, 'assinantes_pro', email);
       const snap = await getDoc(refDoc);
       if (snap.exists()) {
-        const lerProAte = (d) => d.proAte && typeof d.proAte.toDate === 'function' ? d.proAte.toDate() : (d.proAte ? new Date(d.proAte) : null);
-        let dados = snap.data();
-        let proAte = lerProAte(dados);
-        // Assinatura do Google Play vencida (ou vencendo em 1 dia): confere renovação com a Google
-        if (dados.origem === 'google_play' && proAte && proAte.getTime() < Date.now() + 86400000) {
-          try {
-            await fetch('/.netlify/functions/verificar-compra-play', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: email, renovar: true })
-            });
-            const snap2 = await getDoc(refDoc);
-            if (snap2.exists()) { dados = snap2.data(); proAte = lerProAte(dados); }
-          } catch (e) { console.warn('Não foi possível conferir renovação:', e); }
-        }
+        const dados = snap.data();
+        const proAte = dados.proAte && typeof dados.proAte.toDate === 'function' ? dados.proAte.toDate() : (dados.proAte ? new Date(dados.proAte) : null);
         window.statusProCache.ativo = proAte ? (proAte.getTime() > Date.now()) : false;
       }
     } catch (e) {
