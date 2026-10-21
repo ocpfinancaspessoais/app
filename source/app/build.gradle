@@ -22,7 +22,7 @@ plugins {
 }
 
 def twaManifest = [
-    applicationId: 'br.com.app_6cxocodigodaprosperidade.app.twa',
+    applicationId: 'br.com.ocodigodaprosperidade.app',
     hostName: 'app.6cxocodigodaprosperidade.com.br', // The domain being opened in the TWA.
     launchUrl: '/', // The start path for the TWA. Must be relative to the domain.
     name: 'OCP Finanças Pessoais', // The application name.
@@ -55,7 +55,7 @@ android {
     compileSdkVersion 36
     namespace 'br.com.app_6cxocodigodaprosperidade.app.twa'
     defaultConfig {
-        applicationId 'br.com.app_6cxocodigodaprosperidade.app.twa'
+        applicationId 'br.com.ocodigodaprosperidade.app'
         minSdkVersion 24
         targetSdkVersion 36
         versionCode 9
@@ -151,9 +151,18 @@ android {
 
         
     }
+    signingConfigs {
+        release {
+            storeFile file('release.keystore')
+            storePassword System.getenv('KEYSTORE_PASSWORD')
+            keyAlias System.getenv('KEY_ALIAS')
+            keyPassword System.getenv('KEY_PASSWORD')
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
