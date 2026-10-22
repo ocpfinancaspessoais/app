@@ -159,7 +159,15 @@
   .topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
   .topbar-brand { font-family: var(--font-head); font-size: 15px; font-weight: 700; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .topbar-user { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-  .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #0a0f1e; }
+  .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #0a0f1e; overflow: hidden; cursor: pointer; flex-shrink: 0; }
+  .user-avatar img, .perfil-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .perfil-bloco { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 4px 0 6px; }
+  .perfil-foto { width: 84px; height: 84px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 32px; font-weight: 700; color: #0a0f1e; overflow: hidden; margin-bottom: 10px; }
+  .perfil-nome { font-family: var(--font-head); font-size: 16px; font-weight: 700; color: var(--text); }
+  .perfil-email { font-size: 12px; color: var(--muted); word-break: break-all; margin-top: 2px; }
+  .perfil-plano { display: inline-block; margin-top: 10px; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; background: rgba(201,168,76,0.12); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+  .perfil-acoes { display: flex; gap: 8px; margin-top: 12px; width: 100%; }
+  .perfil-acoes .btn-add { padding: 9px 10px; font-size: 12px; }
   .btn-logout { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
   .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
   .nav-tabs { display: flex; overflow-x: auto; background: var(--navy2); border-bottom: 1px solid var(--border); padding: 0 8px; scrollbar-width: none; }
@@ -360,6 +368,18 @@
       </button>
     </div>
 
+    <div class="perfil-bloco">
+      <div class="perfil-foto" id="perfil-foto">?</div>
+      <div class="perfil-nome" id="perfil-nome"></div>
+      <div class="perfil-email" id="perfil-email"></div>
+      <span class="perfil-plano" id="perfil-plano"></span>
+      <div class="perfil-acoes">
+        <button type="button" class="btn-add" onclick="document.getElementById('foto-input').click()">📷 Trocar foto</button>
+        <button type="button" class="btn-add" id="btn-remover-foto" onclick="removerFotoPerfil()" style="display:none;">Remover</button>
+      </div>
+      <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="escolherFotoPerfil(this)">
+    </div>
+
     <div class="app-menu-section-title">Aparência</div>
     <div class="theme-switch">
       <button id="btn-tema-escuro" onclick="definirTema('dark')">
@@ -407,7 +427,7 @@
       </div>
     </div>
     <div class="topbar-user">
-      <div class="user-avatar" id="user-avatar">?</div>
+      <div class="user-avatar" id="user-avatar" role="button" tabindex="0" onclick="abrirMenuApp()" aria-label="Abrir perfil">?</div>
       <button class="btn-logout" onclick="fazerLogout()">Sair</button>
     </div>
   </div>
@@ -474,8 +494,8 @@
     <div class="card">
       <div class="card-title">Distribuição das 6 Caixinhas</div>
       <div class="caixinhas-grid">
-        <div class="caixinha-card cx-nb"><div class="caixinha-emoji">🏠</div><div class="caixinha-name">Necessidases Básicas</div><div class="caixinha-value" id="cx-nb-val">R$ 0</div><div class="caixinha-pct" id="cx-nb-pct">—%</div></div>
-        <div class="caixinha-card cx-lf"><div class="caixinha-emoji">🏦</div><div class="caixinha-name">Liberdade Fininanceira</div><div class="caixinha-value" id="cx-lf-val">R$ 0</div><div class="caixinha-pct" id="cx-lf-pct">10%</div></div>
+        <div class="caixinha-card cx-nb"><div class="caixinha-emoji">🏠</div><div class="caixinha-name">Necessidades Básicas</div><div class="caixinha-value" id="cx-nb-val">R$ 0</div><div class="caixinha-pct" id="cx-nb-pct">—%</div></div>
+        <div class="caixinha-card cx-lf"><div class="caixinha-emoji">🏦</div><div class="caixinha-name">Liberdade Financeira</div><div class="caixinha-value" id="cx-lf-val">R$ 0</div><div class="caixinha-pct" id="cx-lf-pct">10%</div></div>
         <div class="caixinha-card cx-dlp"><div class="caixinha-emoji">🛡️</div><div class="caixinha-name">Despesas de Longo Prazo/Reserva de Emergência</div><div class="caixinha-value" id="cx-dlp-val">R$ 0</div><div class="caixinha-pct" id="cx-dlp-pct">10%</div></div>
         <div class="caixinha-card cx-edu"><div class="caixinha-emoji">📚</div><div class="caixinha-name">Educação</div><div class="caixinha-value" id="cx-edu-val">R$ 0</div><div class="caixinha-pct" id="cx-edu-pct">10%</div></div>
         <div class="caixinha-card cx-div"><div class="caixinha-emoji">🎉</div><div class="caixinha-name">Diversão/Lazer/Desfrute</div><div class="caixinha-value" id="cx-div-val">R$ 0</div><div class="caixinha-pct" id="cx-div-pct">10%</div></div>
@@ -662,6 +682,83 @@ carregarTema();
 
 let loginComGoogle;
 
+/* ===================== PERFIL / FOTO ===================== */
+function fotoKey(email) { return 'cdp_foto_' + email; }
+function fotoPersonalizada() {
+  if (!estado.usuario) return null;
+  try { return localStorage.getItem(fotoKey(estado.usuario.email)); } catch (e) { return null; }
+}
+function preencherAvatar(el, foto, letra) {
+  if (!el) return;
+  el.textContent = '';
+  if (foto) {
+    const img = document.createElement('img');
+    img.alt = 'Foto do perfil';
+    img.referrerPolicy = 'no-referrer';
+    img.onerror = function () { el.textContent = letra; };
+    img.src = foto;
+    el.appendChild(img);
+  } else {
+    el.textContent = letra;
+  }
+}
+function atualizarAvatar() {
+  if (!estado.usuario) return;
+  const letra = (estado.usuario.nome || '?').charAt(0).toUpperCase();
+  const custom = fotoPersonalizada();
+  const foto = custom || estado.usuario.foto || null;
+  preencherAvatar(document.getElementById('user-avatar'), foto, letra);
+  preencherAvatar(document.getElementById('perfil-foto'), foto, letra);
+  document.getElementById('perfil-nome').textContent = estado.usuario.nome || '';
+  document.getElementById('perfil-email').textContent = estado.usuario.email || '';
+  document.getElementById('btn-remover-foto').style.display = custom ? '' : 'none';
+  atualizarPlanoPerfil();
+}
+function atualizarPlanoPerfil() {
+  const el = document.getElementById('perfil-plano');
+  if (!el || !estado.usuario) return;
+  if (isPro()) {
+    el.textContent = '✨ Plano PRO';
+  } else if (estaEmTrial()) {
+    const d = diasRestantesTrial();
+    el.textContent = '🎁 Teste grátis: ' + d + (d === 1 ? ' dia restante' : ' dias restantes');
+  } else {
+    el.textContent = 'Plano grátis';
+  }
+}
+function escolherFotoPerfil(input) {
+  const file = input.files && input.files[0];
+  if (!file || !estado.usuario) return;
+  if (!/^image\//.test(file.type)) { alert('Escolha um arquivo de imagem.'); input.value = ''; return; }
+  const reader = new FileReader();
+  reader.onload = function (ev) {
+    const img = new Image();
+    img.onload = function () {
+      const lado = Math.min(img.width, img.height);
+      const canvas = document.createElement('canvas');
+      canvas.width = 256; canvas.height = 256;
+      canvas.getContext('2d').drawImage(img, (img.width - lado) / 2, (img.height - lado) / 2, lado, lado, 0, 0, 256, 256);
+      try {
+        localStorage.setItem(fotoKey(estado.usuario.email), canvas.toDataURL('image/jpeg', 0.85));
+        toast('📷 Foto atualizada!');
+      } catch (e) {
+        alert('Não foi possível salvar a foto neste aparelho.');
+      }
+      atualizarAvatar();
+    };
+    img.onerror = function () { alert('Não foi possível ler esta imagem.'); };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+function removerFotoPerfil() {
+  if (!estado.usuario) return;
+  try { localStorage.removeItem(fotoKey(estado.usuario.email)); } catch (e) {}
+  atualizarAvatar();
+  toast('Foto removida');
+}
+
 /* ===================== PRO / MONETIZAÇÃO ===================== */
 const LIMITE_DIVIDAS_GRATIS = 2;
 const LIMITE_DEDUCOES_GRATIS = 2;
@@ -814,7 +911,7 @@ const USERS_KEY = 'cdp_users';
 function getUsers() { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); }
 function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
 function switchTab(tab, e) { document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active')); document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none'; document.getElementById('form-cadastro').style.display = tab === 'cadastro' ? 'block' : 'none'; if (e && e.target) e.target.classList.add('active'); }
-function entrarNoApp(user) { estado.usuario = user; registrarDataCriacaoConta(user.email, user.criadoEm); carregarLocal(user.email); dadosMes(); document.getElementById('login-screen').style.display = 'none'; document.getElementById('app-screen').style.display = 'block'; document.getElementById('app-footer').style.display = 'block'; document.getElementById('user-avatar').textContent = user.nome.charAt(0).toUpperCase(); sincronizarInputs(); atualizarSeletorMeses(); renderizarDespesas(); renderizarDividas(); renderizarDeducoes(); recalcular(); buscarStatusProFirestore(user.email); }
+function entrarNoApp(user) { estado.usuario = user; registrarDataCriacaoConta(user.email, user.criadoEm); carregarLocal(user.email); dadosMes(); document.getElementById('login-screen').style.display = 'none'; document.getElementById('app-screen').style.display = 'block'; document.getElementById('app-footer').style.display = 'block'; atualizarAvatar(); sincronizarInputs(); atualizarSeletorMeses(); renderizarDespesas(); renderizarDividas(); renderizarDeducoes(); recalcular(); buscarStatusProFirestore(user.email); }
 function sincronizarInputs() { const d = dadosMes(); document.getElementById('renda-bruta').value = d.rendaBruta; document.getElementById('pct-lf').value = d.pcts.lf; document.getElementById('pct-dlp').value = d.pcts.dlp; document.getElementById('pct-edu').value = d.pcts.edu; document.getElementById('pct-div').value = d.pcts.div; document.getElementById('pct-doa').value = d.pcts.doa; }
 function fazerLogout() { salvarLocal(); estado.usuario = null; document.getElementById('app-screen').style.display = 'none'; document.getElementById('app-footer').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; document.getElementById('login-email').value = ''; document.getElementById('login-senha').value = ''; }
 function showPage(id, e) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active')); document.getElementById('page-' + id).classList.add('active'); if (e && e.target) e.target.classList.add('active'); if (id === 'historico') renderizarHistorico(); }
@@ -854,6 +951,7 @@ function importarBackup(input) {
   const file = input.files && input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function (ev) { try { const saved = JSON.parse(ev.target.result); if (!saved.meses && saved.rendaBruta === undefined) throw new Error('formato'); if (saved.meses) { estado.meses = saved.meses; estado.mesAtivo = saved.mesAtivo || chaveMesAtual(); } else { estado.meses = {}; estado.mesAtivo = chaveMesAtual(); estado.meses[estado.mesAtivo] = { rendaBruta: saved.rendaBruta ?? 3000, dividas: saved.dividas ?? [], despesas: saved.despesas ?? JSON.parse(JSON.stringify(DESPESAS_PADRAO)), deducoes: saved.deducoes ?? [], pcts: saved.pcts ?? Object.assign({}, PCTS_PADRAO) }; } dadosMes(); sincronizarInputs(); atualizarSeletorMeses(); renderizarDespesas(); renderizarDividas(); renderizarDeducoes(); recalcular(); salvarLocal(); toast('✅ Backup importado!'); } catch (err) { alert('Não foi possível ler este arquivo de backup. Verifique se é o arquivo correto (.json).'); } input.value = ''; }; reader.readAsText(file);
 }
 function atualizarUiBackupPro() {
+  atualizarPlanoPerfil();
   const acessoCompleto = temAcessoCompleto();
   document.getElementById('backup-botoes-wrapper').style.display = acessoCompleto ? 'flex' : 'none';
   document.getElementById('backup-lock-card').style.display = acessoCompleto ? 'none' : 'block';
@@ -1188,7 +1286,8 @@ if ('serviceWorker' in navigator) {
         const dadosUsuario = {
           nome: user.displayName || "Usuário",
           email: user.email.toLowerCase(),
-          criadoEm: user.metadata && user.metadata.creationTime
+          criadoEm: user.metadata && user.metadata.creationTime,
+          foto: user.photoURL || null
         };
         entrarNoApp(dadosUsuario);
         toast('✅ Autenticado via Google!');
@@ -1248,7 +1347,7 @@ if ('serviceWorker' in navigator) {
     erroEl.style.color = '';
     try {
       const cred = await signInWithEmailAndPassword(auth, email, senha);
-      entrarNoApp({ nome: cred.user.displayName || 'Usuário', email: cred.user.email.toLowerCase(), criadoEm: cred.user.metadata && cred.user.metadata.creationTime });
+      entrarNoApp({ nome: cred.user.displayName || 'Usuário', email: cred.user.email.toLowerCase(), criadoEm: cred.user.metadata && cred.user.metadata.creationTime, foto: cred.user.photoURL || null });
     } catch (err) {
       erroEl.style.display = 'block';
       erroEl.textContent = 'E-mail ou senha incorretos.';
