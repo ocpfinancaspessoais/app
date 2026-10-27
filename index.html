@@ -262,6 +262,9 @@
   .pro-modal h3 { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
   .pro-modal p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
   .pro-modal .btn-pro { width: 100%; justify-content: center; padding: 13px; font-size: 14px; }
+  .pro-modal .pro-ou { display: flex; align-items: center; gap: 10px; margin: 14px 0; color: var(--muted); font-size: 11px; }
+  .pro-modal .pro-ou::before, .pro-modal .pro-ou::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .pro-modal .btn-mentoria { background: none; border: 1px solid var(--gold); color: var(--gold); line-height: 1.3; }
   .pro-modal .btn-fechar-modal { width: 100%; background: none; border: none; color: var(--muted); font-size: 12px; margin-top: 10px; cursor: pointer; padding: 6px; }
   .pro-modal .btn-fechar-modal:hover { color: var(--text); }
 </style>
@@ -630,6 +633,8 @@
     <p id="pro-modal-texto">Assine o plano PRO para desbloquear este recurso e ir além no seu Código da Prosperidade.</p>
     <button class="btn-pro" onclick="irParaAssinaturaPro('mensal')" style="margin-bottom:8px;">✨ Assinar Mensal — R$ 5,90</button>
     <button class="btn-pro" onclick="irParaAssinaturaPro('anual')">✨ Assinar Anual — R$ 59,90</button>
+    <div class="pro-ou"><span>ou</span></div>
+    <button class="btn-pro btn-mentoria" onclick="irParaMentoria()">🎓 Adquirir a Mentoria — 1 ano de acesso PRO incluso</button>
     <button class="btn-fechar-modal" onclick="fecharModalPro()">Agora não</button>
   </div>
 </div>
@@ -714,13 +719,18 @@ function temAcessoCompleto() {
 
 function abrirModalPro(origem) {
   const textos = {
-    dividas: 'Você já cadastrou o limite de dívidas do plano grátis. Assine o PRO para acompanhar quantas dívidas quiser, sem limite.',
-    deducoes: 'Você já cadastrou o limite de deduções do plano grátis. Assine o PRO para ter deduções ilimitadas.',
+    dividas: 'Você já cadastrou o limite de dívidas do plano grátis. Assine o PRO ou adquira a Mentoria (que inclui 1 ano de acesso PRO) para acompanhar quantas dívidas quiser.',
+    deducoes: 'Você já cadastrou o limite de deduções do plano grátis. Assine o PRO ou adquira a Mentoria (que inclui 1 ano de acesso PRO) para ter deduções ilimitadas.',
     historico: 'Seu histórico grátis mostra apenas os meses mais recentes. Assine o PRO para ver todo o seu histórico, sem limite.',
     backup: 'Exportar e importar backup é exclusivo do plano PRO. Assine para guardar uma cópia segura dos seus dados.'
   };
   document.getElementById('pro-modal-texto').textContent = textos[origem] || textos.backup;
   document.getElementById('pro-modal-overlay').classList.add('show');
+}
+const LINK_MENTORIA = 'https://www.6cxocodigodaprosperidade.com.br/p/mentoria.html';
+function irParaMentoria() {
+  fecharModalPro();
+  window.open(LINK_MENTORIA, '_blank', 'noopener');
 }
 function fecharModalPro() { document.getElementById('pro-modal-overlay').classList.remove('show'); }
 
