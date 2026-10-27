@@ -727,6 +727,8 @@ function abrirModalPro(origem) {
   document.getElementById('pro-modal-texto').textContent = textos[origem] || textos.backup;
   document.getElementById('pro-modal-overlay').classList.add('show');
 }
+// Função de verificação de compra continua hospedada no Netlify
+const URL_FUNCAO_COMPRA = 'https://app.6cxocodigodaprosperidade.com.br/.netlify/functions/verificar-compra-play';
 const LINK_MENTORIA = 'https://www.6cxocodigodaprosperidade.com.br/p/mentoria.html';
 function irParaMentoria() {
   fecharModalPro();
@@ -785,7 +787,7 @@ async function irParaAssinaturaPro(tipoPlano) {
 
 async function confirmarCompraNoServidor(email, sku, detalhes) {
   try {
-    await fetch('/.netlify/functions/verificar-compra-play', {
+    await fetch(URL_FUNCAO_COMPRA, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email, productId: sku, purchaseToken: detalhes && detalhes.purchaseToken })
@@ -1277,7 +1279,7 @@ if ('serviceWorker' in navigator) {
         // Assinatura do Google Play vencida (ou vencendo em 1 dia): confere renovação com a Google
         if (dados.origem === 'google_play' && proAte && proAte.getTime() < Date.now() + 86400000) {
           try {
-            await fetch('/.netlify/functions/verificar-compra-play', {
+            await fetch(URL_FUNCAO_COMPRA, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ email: email, renovar: true })
