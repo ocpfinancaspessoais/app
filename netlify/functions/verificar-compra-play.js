@@ -23,11 +23,40 @@ const PRODUTOS_ASSINATURA = {
   assinatura_pro_anual: 366,
 };
 
-const resp = (statusCode, obj) => ({ statusCode, body: JSON.stringify(obj) });
+// Endereços de onde o app pode chamar esta função (CORS)
+const ORIGENS_PERMITIDAS = [
+  'https://ocpfinancaspessoais.github.io',
+  'https://app.6cxocodigodaprosperidade.com.br',
+];
+
+function cabecalhosCors(event) {
+  const origem = (event.headers && (event.headers.origin || event.headers.Origin)) || '';
+  const h = {
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin',
+  };
+  if (ORIGENS_PERMITIDAS.includes(origem)) {
+    h['Access-Control-Allow-Origin'] = origem;
+  }
+  return h;
+}
 
 exports.handler = async (event) => {
+  const cors = cabecalhosCors(event);
+  const resp = (statusCode, obj) => ({
+    statusCode,
+    headers: { ...cors, 'Content-Type': 'application/json' },
+    body: JSON.stringify(obj),
+  });
+
+  // Pré-verificação que o navegador faz antes do POST
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers: cors, body: '' };
+  }
+
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Método não permitido' };
+    return { statusCode: 405, headers: cors, body: 'Método não permitido' };
   }
 
   try {
