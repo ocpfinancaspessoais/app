@@ -8,9 +8,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>O Código da Prosperidade | App Financeiro</title>
-<link rel="manifest" href="/manifest.json">
-<link rel="icon" href="/icon-192.png">
-<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="launchericon-192x192.png">
+<link rel="apple-touch-icon" href="launchericon-192x192.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -1157,7 +1157,7 @@ function renderizarDespesas() { const lista = document.getElementById('lista-des
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('SW não registrado:', err));
+    navigator.serviceWorker.register('sw.js', { scope: './' }).catch((err) => console.warn('SW não registrado:', err));
   });
 }
 </script>
