@@ -8,9 +8,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>O Código da Prosperidade | App Financeiro</title>
-<link rel="manifest" href="/manifest.json">
-<link rel="icon" href="/icon-192.png">
-<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="launchericon-192x192.png">
+<link rel="apple-touch-icon" href="launchericon-192x192.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -262,6 +262,9 @@
   .pro-modal h3 { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
   .pro-modal p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
   .pro-modal .btn-pro { width: 100%; justify-content: center; padding: 13px; font-size: 14px; }
+  .pro-modal .pro-ou { display: flex; align-items: center; gap: 10px; margin: 14px 0; color: var(--muted); font-size: 11px; }
+  .pro-modal .pro-ou::before, .pro-modal .pro-ou::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .pro-modal .btn-mentoria { background: none; border: 1px solid var(--gold); color: var(--gold); line-height: 1.3; }
   .pro-modal .btn-fechar-modal { width: 100%; background: none; border: none; color: var(--muted); font-size: 12px; margin-top: 10px; cursor: pointer; padding: 6px; }
   .pro-modal .btn-fechar-modal:hover { color: var(--text); }
 </style>
@@ -630,6 +633,8 @@
     <p id="pro-modal-texto">Assine o plano PRO para desbloquear este recurso e ir além no seu Código da Prosperidade.</p>
     <button class="btn-pro" onclick="irParaAssinaturaPro('mensal')" style="margin-bottom:8px;">✨ Assinar Mensal — R$ 5,90</button>
     <button class="btn-pro" onclick="irParaAssinaturaPro('anual')">✨ Assinar Anual — R$ 59,90</button>
+    <div class="pro-ou"><span>ou</span></div>
+    <button class="btn-pro btn-mentoria" onclick="irParaMentoria()">🎓 Adquirir a Mentoria — 1 ano de acesso PRO incluso</button>
     <button class="btn-fechar-modal" onclick="fecharModalPro()">Agora não</button>
   </div>
 </div>
@@ -714,13 +719,20 @@ function temAcessoCompleto() {
 
 function abrirModalPro(origem) {
   const textos = {
-    dividas: 'Você já cadastrou o limite de dívidas do plano grátis. Assine o PRO para acompanhar quantas dívidas quiser, sem limite.',
-    deducoes: 'Você já cadastrou o limite de deduções do plano grátis. Assine o PRO para ter deduções ilimitadas.',
+    dividas: 'Você já cadastrou o limite de dívidas do plano grátis. Assine o PRO ou adquira a Mentoria (que inclui 1 ano de acesso PRO) para acompanhar quantas dívidas quiser.',
+    deducoes: 'Você já cadastrou o limite de deduções do plano grátis. Assine o PRO ou adquira a Mentoria (que inclui 1 ano de acesso PRO) para ter deduções ilimitadas.',
     historico: 'Seu histórico grátis mostra apenas os meses mais recentes. Assine o PRO para ver todo o seu histórico, sem limite.',
     backup: 'Exportar e importar backup é exclusivo do plano PRO. Assine para guardar uma cópia segura dos seus dados.'
   };
   document.getElementById('pro-modal-texto').textContent = textos[origem] || textos.backup;
   document.getElementById('pro-modal-overlay').classList.add('show');
+}
+// Função de verificação de compra continua hospedada no Netlify
+const URL_FUNCAO_COMPRA = 'https://app.6cxocodigodaprosperidade.com.br/.netlify/functions/verificar-compra-play';
+const LINK_MENTORIA = 'https://www.6cxocodigodaprosperidade.com.br/p/mentoria.html';
+function irParaMentoria() {
+  fecharModalPro();
+  window.open(LINK_MENTORIA, '_blank', 'noopener');
 }
 function fecharModalPro() { document.getElementById('pro-modal-overlay').classList.remove('show'); }
 
@@ -775,7 +787,7 @@ async function irParaAssinaturaPro(tipoPlano) {
 
 async function confirmarCompraNoServidor(email, sku, detalhes) {
   try {
-    await fetch('/.netlify/functions/verificar-compra-play', {
+    await fetch(URL_FUNCAO_COMPRA, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email, productId: sku, purchaseToken: detalhes && detalhes.purchaseToken })
@@ -884,7 +896,7 @@ function recalcular() {
   document.getElementById('cx-div-pct').textContent = pct(p.div);
   document.getElementById('cx-doa-val').textContent = R(vals.doa);
   document.getElementById('cx-doa-pct').textContent = pct(p.doa);
-  const rows = [['🏠 Necessidades Básicas',nbPct,vals.nb],['🏦 Liberdade Financeira',p.lf,vals.lf],['🛡️ Desp. Longo Prazo',p.dlp,vals.dlp],['📚 Educação',p.edu,vals.edu],['🎉 Diversão',p.div,vals.div],['🤝 Doações',p.doa,vals.doa],['TOTAL',100,subtotal]];
+  const rows = [['🏠 Necessidades Básicas',nbPct,vals.nb],['🏦 Liberdade Financeira',p.lf,vals.lf],['🛡️ Desp. Longo Prazo/Reserva de Emergência',p.dlp,vals.dlp],['📚 Educação',p.edu,vals.edu],['🎉 Diversão/Lazer/Desfrute',p.div,vals.div],['🤝 Doações',p.doa,vals.doa],['TOTAL',100,subtotal]];
   document.getElementById('tabela-caixinhas').innerHTML = rows.map((r,i) => `<tr><td>${r[0]}</td><td style="text-align:right">${pct(r[1])}</td><td style="text-align:right;font-weight:${i===6?'700':'400'};color:${i===6?'var(--gold)':'var(--text)'}">${R(r[2])}</td></tr>`).join('');
   const totalNB = d.despesas.reduce((s, x) => s + (x.valor || 0), 0);
   document.getElementById('nb-total-display').textContent = R(totalNB);
@@ -1145,7 +1157,7 @@ function renderizarDespesas() { const lista = document.getElementById('lista-des
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('SW não registrado:', err));
+    navigator.serviceWorker.register('sw.js', { scope: './' }).catch((err) => console.warn('SW não registrado:', err));
   });
 }
 </script>
@@ -1267,7 +1279,7 @@ if ('serviceWorker' in navigator) {
         // Assinatura do Google Play vencida (ou vencendo em 1 dia): confere renovação com a Google
         if (dados.origem === 'google_play' && proAte && proAte.getTime() < Date.now() + 86400000) {
           try {
-            await fetch('/.netlify/functions/verificar-compra-play', {
+            await fetch(URL_FUNCAO_COMPRA, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ email: email, renovar: true })
