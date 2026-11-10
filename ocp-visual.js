@@ -140,7 +140,7 @@
   <button class="ocp-bn active" data-p="visao-geral" type="button" onclick="ocpIr('visao-geral')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg><span>Início</span></button>
   <button class="ocp-bn" data-p="caixinhas" type="button" onclick="ocpIr('caixinhas')"><svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg><span>Caixinhas</span></button>
   <button class="ocp-bn" data-p="dividas" type="button" onclick="ocpIr('dividas')"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20M6 15h4"/></svg><span>Dívidas</span></button>
-  <button class="ocp-bn" data-p="nec-basicas" type="button" onclick="ocpIr('nec-basicas')"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Necessidades</span></button>
+  <button class="ocp-bn" data-p="nec-basicas" type="button" onclick="ocpIr('nec-basicas')"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Necessidades Básicas</span></button>
   <button class="ocp-bn" data-p="mais" type="button" onclick="ocpMais()"><svg viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>Mais</span></button>
 </nav>`;
 
