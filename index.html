@@ -896,7 +896,7 @@ function recalcular() {
   document.getElementById('cx-div-pct').textContent = pct(p.div);
   document.getElementById('cx-doa-val').textContent = R(vals.doa);
   document.getElementById('cx-doa-pct').textContent = pct(p.doa);
-  const rows = [['🏠 Necessidades Básicas',nbPct,vals.nb],['🏦 Liberdade Financeira',p.lf,vals.lf],['🛡️ Desp. Longo Prazo',p.dlp,vals.dlp],['📚 Educação',p.edu,vals.edu],['🎉 Diversão',p.div,vals.div],['🤝 Doações',p.doa,vals.doa],['TOTAL',100,subtotal]];
+  const rows = [['🏠 Necessidades Básicas',nbPct,vals.nb],['🏦 Liberdade Financeira',p.lf,vals.lf],['🛡️ Desp. Longo Prazo/Reserva de Emergência',p.dlp,vals.dlp],['📚 Educação',p.edu,vals.edu],['🎉 Diversão/Lazer/Desfrute',p.div,vals.div],['🤝 Doações',p.doa,vals.doa],['TOTAL',100,subtotal]];
   document.getElementById('tabela-caixinhas').innerHTML = rows.map((r,i) => `<tr><td>${r[0]}</td><td style="text-align:right">${pct(r[1])}</td><td style="text-align:right;font-weight:${i===6?'700':'400'};color:${i===6?'var(--gold)':'var(--text)'}">${R(r[2])}</td></tr>`).join('');
   const totalNB = d.despesas.reduce((s, x) => s + (x.valor || 0), 0);
   document.getElementById('nb-total-display').textContent = R(totalNB);
